@@ -329,16 +329,12 @@ function noise(x, y, t) {
 }
 
 function project(x, y, z) {
-  // Isometric-ish projection
-  const cx = width / 2;
-  const cy = height / 2 + 30;
-  const px = (x - GRID_X / 2) * (width / (GRID_X * SCALE_X));
-  const py = (y - GRID_Y / 2) * (height / (GRID_Y / SCALE_Y));
-  
-  // Flatten perspective
-  const screenX = cx + px;
-  const screenY = cy + py * 0.35 - z * 18;
-  
+  // Map grid directly to full screen width, centered vertical band
+  const screenX = (x / (GRID_X - 1)) * width;
+  const cy = height / 2;
+  const bandHeight = height * 0.45;
+  const screenY = cy + ((y / (GRID_Y - 1)) - 0.5) * bandHeight - z * 18;
+
   return { x: screenX, y: screenY };
 }
 
@@ -353,11 +349,9 @@ function draw() {
       const z = noise(x, y, time);
       const p = project(x, y, z);
       
-      // Distance from center for opacity — gentle fade at far edges only
-      const dx = (x / GRID_X) - 0.5;
-      const dy = (y / GRID_Y) - 0.5;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const fade = Math.max(0.08, 1 - dist * 1.2);
+      // Fade only at top/bottom edges, full opacity across width
+      const dy = Math.abs((y / (GRID_Y - 1)) - 0.5) * 2;
+      const fade = Math.max(0.05, 1 - dy * dy);
       
       points[y][x] = { ...p, z, fade };
     }
