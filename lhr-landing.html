@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Long Horizon Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #0c0b09;
+    --text: #d4cfc4;
+    --text-dim: #6b665a;
+    --text-bright: #eae5d8;
+    --accent: #c9a84c;
+    --line: #2a2720;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Page structure */
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    padding: 2rem;
+  }
+
+  /* Generative terrain canvas */
+  canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: canvasFade 3s ease 0.5s forwards;
+  }
+
+  @keyframes canvasFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Content overlay */
+  .content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--text-bright);
+    margin-bottom: 1.6rem;
+    opacity: 0;
+    animation: textReveal 1.8s ease 1.5s forwards;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: textReveal 1.8s ease 2.2s forwards;
+  }
+
+  .links {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    opacity: 0;
+    animation: textReveal 1.8s ease 2.8s forwards;
+  }
+
+  .links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.5s ease;
+  }
+
+  .links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  .links a:hover {
+    color: var(--text-bright);
+  }
+
+  .links a:hover::after {
+    width: 100%;
+  }
+
+  .dot {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+
+  /* Corner marks */
+  .corner {
+    position: fixed;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 200;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: textReveal 1.8s ease 3.2s forwards;
+  }
+
+  .corner-tl {
+    top: 2rem;
+    left: 2.5rem;
+  }
+
+  .corner-br {
+    bottom: 2rem;
+    right: 2.5rem;
+  }
+
+  @keyframes textReveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Grain overlay */
+  .grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  /* Team overlay */
+  .team-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(12, 11, 9, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .team-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .team-content {
+    text-align: center;
+    max-width: 480px;
+    padding: 2rem;
+  }
+
+  .team-content h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--text-bright);
+    margin-bottom: 1.8rem;
+  }
+
+  .team-content p {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 2.5rem;
+  }
+
+  .team-content a.email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+
+  .team-content a.email:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .team-close {
+    position: absolute;
+    top: 2rem;
+    right: 2.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 200;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .team-close:hover {
+    color: var(--text-bright);
+  }
+
+  @media (max-width: 600px) {
+    .links {
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .dot { display: none; }
+    .corner { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- Team overlay -->
+<div class="team-overlay" id="team-overlay">
+  <button class="team-close" id="team-close">Close</button>
+  <div class="team-content">
+    <h2>Team</h2>
+    <p>A small team in San Francisco, building infrastructure for the next era of human-agent collaboration.</p>
+    <a href="mailto:team@sundialhub.com" class="email">team@sundialhub.com</a>
+  </div>
+</div>
+
+<div class="page">
+  <canvas id="terrain"></canvas>
+
+  <div class="content">
+    <h1 class="title">Long Horizon Research</h1>
+    <p class="subtitle">Infrastructure for meaningful work between humans and machines.</p>
+    <div class="links">
+      <a href="https://sundialhub.com" target="_blank">Sundial</a>
+      <span class="dot"></span>
+      <a href="https://belindamo.com/b/infrastructure+for+meaningful+work" target="_blank">Manifesto</a>
+      <span class="dot"></span>
+      <a href="#team" id="team-link">Team</a>
+    </div>
+  </div>
+
+  <span class="corner corner-tl">San Francisco</span>
+  <span class="corner corner-br">2026</span>
+</div>
+
+<script>
+// Generative wireframe terrain — like land forming from nothing
+// Inspired by Way of Code's mesh aesthetic
+const canvas = document.getElementById('terrain');
+const ctx = canvas.getContext('2d');
+
+let width, height;
+let time = 0;
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
+  ctx.scale(dpr, dpr);
+}
+
+resize();
+window.addEventListener('resize', resize);
+
+// Terrain parameters
+const GRID_X = 60;
+const GRID_Y = 35;
+const SCALE_X = 1.4;
+const SCALE_Y = 0.65;
+
+function noise(x, y, t) {
+  // Layered sine waves to approximate organic terrain
+  return (
+    Math.sin(x * 0.3 + t * 0.15) * Math.cos(y * 0.4 + t * 0.1) * 1.2 +
+    Math.sin(x * 0.7 - t * 0.08) * Math.sin(y * 0.6 + t * 0.12) * 0.6 +
+    Math.cos(x * 0.15 + y * 0.2 + t * 0.05) * 1.5 +
+    Math.sin((x + y) * 0.25 + t * 0.07) * 0.8
+  );
+}
+
+function project(x, y, z) {
+  // Isometric-ish projection
+  const cx = width / 2;
+  const cy = height / 2 + 30;
+  const px = (x - GRID_X / 2) * (width / (GRID_X * SCALE_X));
+  const py = (y - GRID_Y / 2) * (height / (GRID_Y / SCALE_Y));
+  
+  // Flatten perspective
+  const screenX = cx + px;
+  const screenY = cy + py * 0.35 - z * 18;
+  
+  return { x: screenX, y: screenY };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, width, height);
+  
+  const points = [];
+  
+  for (let y = 0; y < GRID_Y; y++) {
+    points[y] = [];
+    for (let x = 0; x < GRID_X; x++) {
+      const z = noise(x, y, time);
+      const p = project(x, y, z);
+      
+      // Distance from center for opacity
+      const dx = (x / GRID_X) - 0.5;
+      const dy = (y / GRID_Y) - 0.5;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const fade = Math.max(0, 1 - dist * 2.2);
+      
+      points[y][x] = { ...p, z, fade };
+    }
+  }
+  
+  // Draw horizontal lines
+  for (let y = 0; y < GRID_Y; y++) {
+    ctx.beginPath();
+    for (let x = 0; x < GRID_X; x++) {
+      const p = points[y][x];
+      if (x === 0) {
+        ctx.moveTo(p.x, p.y);
+      } else {
+        ctx.lineTo(p.x, p.y);
+      }
+    }
+    const rowFade = points[y][Math.floor(GRID_X / 2)].fade;
+    ctx.strokeStyle = `rgba(180, 170, 148, ${rowFade * 0.18})`;
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+  
+  // Draw vertical lines (sparser)
+  for (let x = 0; x < GRID_X; x += 2) {
+    ctx.beginPath();
+    for (let y = 0; y < GRID_Y; y++) {
+      const p = points[y][x];
+      if (y === 0) {
+        ctx.moveTo(p.x, p.y);
+      } else {
+        ctx.lineTo(p.x, p.y);
+      }
+    }
+    const colFade = points[Math.floor(GRID_Y / 2)][x].fade;
+    ctx.strokeStyle = `rgba(180, 170, 148, ${colFade * 0.10})`;
+    ctx.lineWidth = 0.4;
+    ctx.stroke();
+  }
+
+  // Sparse highlight dots on peaks
+  for (let y = 2; y < GRID_Y - 2; y += 3) {
+    for (let x = 2; x < GRID_X - 2; x += 4) {
+      const p = points[y][x];
+      if (p.z > 1.8 && p.fade > 0.3) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201, 168, 76, ${p.fade * 0.25})`;
+        ctx.fill();
+      }
+    }
+  }
+
+  time += 0.008;
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+// Team overlay
+const teamLink = document.getElementById('team-link');
+const teamOverlay = document.getElementById('team-overlay');
+const teamClose = document.getElementById('team-close');
+
+teamLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  teamOverlay.classList.add('visible');
+});
+
+teamClose.addEventListener('click', () => {
+  teamOverlay.classList.remove('visible');
+});
+
+teamOverlay.addEventListener('click', (e) => {
+  if (e.target === teamOverlay) {
+    teamOverlay.classList.remove('visible');
+  }
+});
+</script>
+
+</body>
+</html>
