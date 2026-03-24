@@ -76,7 +76,7 @@
 
   .title {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
     font-weight: 300;
     letter-spacing: 0.06em;
     color: var(--text-bright);
@@ -87,12 +87,12 @@
 
   .subtitle {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
     font-weight: 300;
     font-style: italic;
     color: var(--text-dim);
     line-height: 1.7;
-    max-width: 420px;
+    max-width: 520px;
     margin-bottom: 3rem;
     opacity: 0;
     animation: textReveal 1.8s ease 2.2s forwards;
@@ -108,7 +108,7 @@
 
   .links a {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     font-weight: 300;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -144,27 +144,6 @@
     background: var(--text-dim);
   }
 
-  /* Corner marks */
-  .corner {
-    position: fixed;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
-    font-weight: 200;
-    letter-spacing: 0.08em;
-    color: var(--text-dim);
-    opacity: 0;
-    animation: textReveal 1.8s ease 3.2s forwards;
-  }
-
-  .corner-tl {
-    top: 2rem;
-    left: 2.5rem;
-  }
-
-  .corner-br {
-    bottom: 2rem;
-    right: 2.5rem;
-  }
 
   @keyframes textReveal {
     from { opacity: 0; transform: translateY(8px); }
@@ -218,7 +197,7 @@
 
   .team-content h2 {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.6rem;
+    font-size: 2rem;
     font-weight: 300;
     letter-spacing: 0.04em;
     color: var(--text-bright);
@@ -227,7 +206,7 @@
 
   .team-content p {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.15rem;
+    font-size: 1.4rem;
     font-weight: 300;
     font-style: italic;
     line-height: 1.8;
@@ -237,7 +216,7 @@
 
   .team-content a.email {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     font-weight: 300;
     letter-spacing: 0.1em;
     color: var(--accent);
@@ -255,7 +234,7 @@
     top: 2rem;
     right: 2.5rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     font-weight: 200;
     letter-spacing: 0.08em;
     color: var(--text-dim);
@@ -275,7 +254,6 @@
       gap: 1.2rem;
     }
     .dot { display: none; }
-    .corner { display: none; }
   }
 </style>
 </head>
@@ -308,8 +286,7 @@
     </div>
   </div>
 
-  <span class="corner corner-tl">San Francisco</span>
-  <span class="corner corner-br">2026</span>
+
 </div>
 
 <script>
@@ -376,11 +353,11 @@ function draw() {
       const z = noise(x, y, time);
       const p = project(x, y, z);
       
-      // Distance from center for opacity
+      // Distance from center for opacity — gentle fade at far edges only
       const dx = (x / GRID_X) - 0.5;
       const dy = (y / GRID_Y) - 0.5;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const fade = Math.max(0, 1 - dist * 2.2);
+      const fade = Math.max(0.08, 1 - dist * 1.2);
       
       points[y][x] = { ...p, z, fade };
     }
