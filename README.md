@@ -1,9 +1,7 @@
 # Long Horizon Research — longhorizonresearch.com
 
-Next.js static site. Two looks:
-
-- `/` — treatise plate: a computed horizontal sundial for SF (real solar geometry), live shadow, day/night follows the actual sun.
-- `/quiet` — minimal bookplate alternative.
+Next.js static site, drawn as a treatise plate: a computed horizontal sundial for SF
+(real solar geometry), a live shadow, and a day/night state that follows the actual sun.
 
 ```bash
 pnpm install
