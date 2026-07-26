@@ -12,7 +12,6 @@
   --ink-faint: #6f6a5b;
   --line: #c6c0af;
   --accent: #9c3a22;
-  --glow: #d0973f;
   --grain-opacity: 0.05;
 }
 
@@ -22,18 +21,7 @@ html[data-mode='night'] {
   --ink-faint: #7a7462;
   --line: #2d2921;
   --accent: #c9a84c;
-  --glow: #c9a84c;
   --grain-opacity: 0.07;
-}
-
-/* lenis smooth scrolling */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
 }
 
 html {
@@ -143,53 +131,15 @@ button:focus-visible {
 
 /* ---------- hero / frontispiece ---------- */
 
-/* the day: a tall region the plate stays pinned inside while scroll sweeps
-   solar time from before dawn to after dusk */
-.hero-scroll {
-  position: relative;
-  height: 330vh;
-}
-
 .hero {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
+  position: relative;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding-top: clamp(4rem, 10vh, 7rem);
   overflow: hidden;
-  isolation: isolate;
-}
-
-/* ambient warmth from the low sun, behind everything on the paper */
-.scrub-warm {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: -1;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.scrub-warm-inner {
-  position: absolute;
-  inset: -35% -60%;
-  background: radial-gradient(ellipse 38% 44% at 50% 74%, var(--glow), transparent 70%);
-  will-change: transform;
-}
-
-/* night falling over the plate at both ends of the day */
-.scrub-veil {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background: radial-gradient(ellipse 90% 75% at 50% 62%, #201a10 0%, #0b0906 100%);
-  mix-blend-mode: multiply;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .sun-mark {
@@ -252,6 +202,15 @@ button:focus-visible {
   line-height: 1.9;
 }
 
+.hero-captions .live {
+  text-align: right;
+}
+
+.hero-captions .live em {
+  color: var(--accent);
+  font-style: normal;
+}
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -287,14 +246,6 @@ button:focus-visible {
   .plate-wrap {
     animation: none;
     opacity: 1;
-  }
-  .hero-scroll {
-    height: auto;
-  }
-  .hero {
-    position: relative;
-    height: auto;
-    min-height: 100vh;
   }
 }
 
@@ -449,9 +400,6 @@ main {
 /* ---------- responsive ---------- */
 
 @media (max-width: 640px) {
-  .hero-scroll {
-    height: 280vh;
-  }
   .nav {
     padding: 1.2rem 1.2rem;
   }
