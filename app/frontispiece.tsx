@@ -149,10 +149,6 @@ export default function Frontispiece() {
         ticks.push(`M${t1.x.toFixed(1)},${t1.y.toFixed(1)} L${t2.x.toFixed(1)},${t2.y.toFixed(1)}`);
       }
     }
-    const labelAt = (delta: number, hourAngleDeg: number, dx: number, dy: number) => {
-      const p = nodusShadow(delta, hourAngleDeg)!;
-      return { x: p.x + dx, y: p.y + dy };
-    };
     return {
       hours,
       ticks,
@@ -160,9 +156,6 @@ export default function Frontispiece() {
       equinox: seasonPath(0),
       capricorn: seasonPath(-23.44 * RAD),
       analemma: analemmaPath(),
-      cancerLabel: labelAt(23.44 * RAD, 38, 16, 14),
-      equinoxLabel: labelAt(0, 42, 14, -10),
-      capricornLabel: labelAt(-23.44 * RAD, 26, 18, -8),
     };
   }, []);
 
@@ -180,13 +173,6 @@ export default function Frontispiece() {
     };
     return { end, tip: len <= R_HOUR ? tip : null };
   }, [solar]);
-
-  const labelStyle = {
-    fontSize: 12.5,
-    fontStyle: 'italic' as const,
-    fontFamily: 'var(--font-body), Georgia, serif',
-    letterSpacing: 2.5,
-  };
 
   return (
     <header className="hero">
@@ -289,17 +275,6 @@ export default function Frontispiece() {
             );
           })}
 
-          {/* labels, as on the old plates */}
-          <text {...geometry.equinoxLabel} fill="var(--accent)" fillOpacity="0.9" {...labelStyle}>
-            æquinoctialis
-          </text>
-          <text {...geometry.cancerLabel} fill="var(--ink)" fillOpacity="0.5" {...labelStyle}>
-            tropicus cancri
-          </text>
-          <text {...geometry.capricornLabel} fill="var(--ink)" fillOpacity="0.5" {...labelStyle}>
-            tropicus capricorni
-          </text>
-
           {/* gnomon foot on the horizon */}
           <circle cx={FOOT.x} cy={FOOT.y} r="3" fill="var(--ink)" fillOpacity="0.8" />
           {/* horizon */}
@@ -308,30 +283,8 @@ export default function Frontispiece() {
       </div>
 
       <div className="hero-captions">
-        <span className="mono">
-          Fig. I — Horizontal dial for lat. 37°46′ N · San Francisco
-          <br />
-          hour lines tan θ = sin φ · tan H · nodus at the gnomon tip
-        </span>
-        <span className="mono live">
-          {solar ? (
-            solar.up ? (
-              <>
-                apparent solar time <em>{solar.apparent}</em>
-                <br />
-                the shadow is live
-              </>
-            ) : (
-              <>
-                the sun is down over the Pacific
-                <br />
-                first light near <em>{solar.sunriseCivil}</em>
-              </>
-            )
-          ) : (
-            <>reading the sky…</>
-          )}
-        </span>
+        <span className="mono">Fig. I · Horizontal dial, lat. 37°46′ N · San Francisco</span>
+        <span className="mono live">{solar && solar.up ? 'the shadow is live' : ''}</span>
       </div>
     </header>
   );

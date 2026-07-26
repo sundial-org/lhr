@@ -9,15 +9,48 @@ export default function Home() {
         <div className="section-label mono">§ The lab</div>
         <div className="prose">
           <p>
-            A sundial has three parts: a plate, a gnomon, and the sun. It tells you nothing on its
-            own. Someone has to stand in front of it and read.
+            Long Horizon Research is a small lab in San Francisco. We build the surface where
+            people and agents work together, and we study what it records. Every edit, comment,
+            acceptance and reversal is a trace of human judgment. We think the next models will
+            learn from traces like these.
           </p>
-          <p className="pull">The agents are here. The instruments for working with them are not.</p>
-          <p>
-            Long Horizon Research is a small lab in San Francisco. We study how humans and agents do
-            meaningful work together, and we build the instruments we wish existed — workspaces where
-            every hand is visible, memory that compounds, ways of seeing what a machine did and why.
-          </p>
+          <p className="pull">The agents are here. The instruments are not.</p>
+        </div>
+      </section>
+
+      <section className="section" id="questions">
+        <div className="section-label mono">§ What we study</div>
+        <div className="ledger">
+          <div className="ledger-row">
+            <span className="ledger-num">Q. I</span>
+            <span>
+              <span className="ledger-name">Surfaces for thinking</span>
+              <span className="ledger-desc" style={{ display: 'block' }}>
+                What does the best surface for thinking look like when machines do most of the
+                drafting?
+              </span>
+            </span>
+          </div>
+          <div className="ledger-row">
+            <span className="ledger-num">Q. II</span>
+            <span>
+              <span className="ledger-name">Learning from collaboration</span>
+              <span className="ledger-desc" style={{ display: 'block' }}>
+                Can a model learn your judgment from working with you? When to act, when to ask,
+                when to leave things alone.
+              </span>
+            </span>
+          </div>
+          <div className="ledger-row">
+            <span className="ledger-num">Q. III</span>
+            <span>
+              <span className="ledger-name">Many hands, one document</span>
+              <span className="ledger-desc" style={{ display: 'block' }}>
+                How do several people and several agents share a document without losing track of
+                who did what, and why?
+              </span>
+            </span>
+          </div>
         </div>
       </section>
 
@@ -29,8 +62,8 @@ export default function Home() {
             <span>
               <span className="ledger-name">Sundial</span>
               <span className="ledger-desc" style={{ display: 'block' }}>
-                A shared workspace where humans and agents write together. Every edit attributed to
-                its author; every change reviewable.
+                A shared workspace where people and agents write together. Every edit has an
+                author, every change can be reviewed.
               </span>
             </span>
             <span className="ledger-dest">sundialhub.com ↗</span>
@@ -48,6 +81,20 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section" id="join">
+        <div className="section-label mono">§ Join us</div>
+        <div className="prose">
+          <p>
+            We are a few people, hiring researchers and engineers in personalization,
+            reinforcement learning and interfaces. You would work on a live instrument and the
+            data it produces.
+          </p>
+          <p>
+            Write to us: <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>.
+          </p>
+        </div>
+      </section>
+
       <footer className="colophon">
         <p className="contact">
           <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>
@@ -55,7 +102,7 @@ export default function Home() {
         <p className="colophon-meta mono">
           Long Horizon Research · San Francisco
           <br />
-          Set in Instrument Serif &amp; Newsreader. Fig. I computed, not drawn.
+          Set in EB Garamond &amp; Newsreader. Fig. I computed, not drawn.
           <br />© MMXXVI
         </p>
       </footer>

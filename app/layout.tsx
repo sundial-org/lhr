@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Instrument_Serif, Newsreader, IBM_Plex_Mono } from 'next/font/google';
+import { EB_Garamond, Newsreader, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
-const display = Instrument_Serif({
-  weight: '400',
+const display = EB_Garamond({
+  weight: ['400', '500'],
   style: ['normal', 'italic'],
   subsets: ['latin'],
   variable: '--font-display',

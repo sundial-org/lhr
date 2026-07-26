@@ -65,17 +65,15 @@ a {
 .mono {
   font-family: var(--font-mono), monospace;
   font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
 }
 
 .mono-link {
   font-family: var(--font-mono), monospace;
   font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
   color: var(--ink-faint);
   text-decoration: none;
   transition: color 0.35s ease;
@@ -121,9 +119,8 @@ button:focus-visible {
   border: none;
   cursor: pointer;
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
   color: var(--ink-faint);
   transition: color 0.35s ease;
 }
@@ -201,7 +198,7 @@ button:focus-visible {
 
 .hero-captions .mono {
   color: var(--ink-faint);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   line-height: 1.9;
 }
 
@@ -320,8 +317,8 @@ main {
 
 .ledger-num {
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
   color: var(--ink-faint);
   white-space: nowrap;
 }
@@ -342,9 +339,8 @@ main {
 
 .ledger-dest {
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
   color: var(--ink-faint);
   transition: color 0.35s ease;
   white-space: nowrap;
@@ -363,9 +359,8 @@ main {
 
 .ledger-note {
   font-family: var(--font-mono), monospace;
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
   color: var(--ink-faint);
   white-space: nowrap;
 }
@@ -398,7 +393,7 @@ main {
 
 .colophon-meta {
   color: var(--ink-faint);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   line-height: 2.1;
 }
 
