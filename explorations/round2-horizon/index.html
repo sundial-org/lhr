@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Long Horizon Research is a laboratory in San Francisco studying human–agent collaboration, and building the instruments that keep human judgment in charge.">
+<title>Long Horizon Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sorts+Mill+Goudy:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #241d13;
+    --ink-soft: #5c5140;
+    --cream: #f2ecdc;
+    --cream-deep: #eae2cd;
+    --rule: rgba(36, 29, 19, 0.22);
+    --ochre: #8f5f2a;
+    --serif: 'Sorts Mill Goudy', 'Iowan Old Style', Georgia, serif;
+    --mono: 'IBM Plex Mono', 'SFMono-Regular', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(143, 95, 42, 0.25); }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--ochre); outline-offset: 3px; }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    height: 132vh;
+    min-height: 940px;
+    overflow: clip;
+  }
+  .hero-art {
+    position: absolute;
+    inset: -6% 0 auto 0;
+    height: 118%;
+    will-change: transform;
+  }
+  .hero-art img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 50% 38%;
+    display: block;
+  }
+  /* painting dissolves into the paper */
+  .hero-fade {
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 34vh;
+    background: linear-gradient(to bottom,
+      rgba(242, 236, 220, 0) 0%,
+      rgba(242, 236, 220, 0.35) 42%,
+      rgba(242, 236, 220, 0.82) 74%,
+      var(--cream) 100%);
+    pointer-events: none;
+  }
+
+  .masthead {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 34px clamp(28px, 4.5vw, 72px) 0;
+    z-index: 3;
+  }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .wordmark small {
+    display: block;
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    color: #4a4133;
+    margin-top: 6px;
+  }
+  nav.index { width: min(300px, 30vw); }
+  nav.index a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 5px 0;
+  }
+  nav.index a .dots {
+    flex: 1;
+    border-bottom: 1px dotted rgba(36, 29, 19, 0.55);
+    transform: translateY(-4px);
+  }
+  nav.index a:hover .dots { border-bottom-color: var(--ochre); }
+  nav.index a:hover { color: var(--ochre); }
+
+  .hero-copy {
+    position: absolute;
+    z-index: 2;
+    top: 24vh;
+    left: clamp(28px, 6vw, 110px);
+    max-width: 880px;
+  }
+  .hero-copy h1 {
+    font-weight: 400;
+    font-size: clamp(46px, 5.5vw, 86px);
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+  }
+  .hero-copy h1 .l2 { font-style: italic; display: block; }
+  .hero-copy .intro {
+    margin-top: 42px;
+    max-width: 470px;
+    font-size: 20px;
+    line-height: 1.6;
+    color: #3a3226;
+  }
+  .reveal { opacity: 0; transform: translateY(14px); }
+  .loaded .reveal {
+    opacity: 1; transform: none;
+    transition: opacity 1.6s cubic-bezier(.19,.6,.22,1), transform 1.9s cubic-bezier(.19,.6,.22,1);
+  }
+  .loaded .reveal.d1 { transition-delay: 0.25s; }
+  .loaded .reveal.d2 { transition-delay: 0.55s; }
+
+  /* ============ SHARED SECTION APPARATUS ============ */
+  .sheet {
+    position: relative;
+    background: var(--cream);
+  }
+  .measure {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 clamp(28px, 4.5vw, 72px);
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-top: 30px;
+    border-top: 1px solid var(--rule);
+  }
+  .section-head .no { color: var(--ochre); font-weight: 500; }
+  .section-head .dots {
+    flex: 1;
+    border-bottom: 1px dotted rgba(36, 29, 19, 0.4);
+    transform: translateY(-4px);
+  }
+
+  /* ============ STATEMENT ============ */
+  .statement { padding: 15vh 0 16vh; }
+  .statement blockquote {
+    max-width: 900px;
+    font-size: clamp(28px, 2.6vw, 38px);
+    line-height: 1.42;
+    margin-top: 64px;
+  }
+  .statement blockquote em { font-style: italic; }
+  .statement .aside {
+    margin-top: 56px;
+    max-width: 520px;
+    color: var(--ink-soft);
+    font-size: 18px;
+  }
+
+  /* ============ QUESTIONS ============ */
+  .questions { padding-bottom: 4vh; }
+  .q {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 84px 0;
+  }
+  .q + .q { border-top: 1px solid var(--rule); }
+  .q .numeral {
+    font-size: 30px;
+    font-style: italic;
+    color: var(--ochre);
+    line-height: 1.15;
+  }
+  .q .numeral span {
+    display: block;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 10px;
+  }
+  .q h3 {
+    font-weight: 400;
+    font-size: clamp(27px, 2.5vw, 36px);
+    line-height: 1.3;
+    max-width: 720px;
+  }
+  .q p {
+    margin-top: 26px;
+    max-width: 560px;
+    color: #453b2c;
+  }
+
+  /* ============ PAINTED INTERLUDE ============ */
+  .interlude {
+    position: relative;
+    height: 62vh;
+    min-height: 420px;
+    overflow: clip;
+  }
+  .interlude .art {
+    position: absolute;
+    inset: -18% 0;
+    will-change: transform;
+  }
+  .interlude .art img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .interlude .veil-top, .interlude .veil-bottom {
+    position: absolute; left: 0; right: 0; height: 26%;
+    pointer-events: none;
+  }
+  .interlude .veil-top { top: -1px; background: linear-gradient(to bottom, var(--cream), rgba(242,236,220,0)); }
+  .interlude .veil-bottom { bottom: -1px; background: linear-gradient(to top, var(--cream), rgba(242,236,220,0)); }
+
+  /* ============ INSTRUMENTS ============ */
+  .instruments { padding: 16vh 0 10vh; }
+  .instruments .lede {
+    max-width: 640px;
+    margin-top: 64px;
+    font-size: clamp(24px, 2vw, 29px);
+    line-height: 1.45;
+  }
+  .folio { margin-top: 96px; }
+  .folio-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 30px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .folio-row:last-child { border-bottom: 1px solid var(--rule); }
+  .folio-row .no {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    width: 84px;
+    flex: none;
+  }
+  .folio-row .name {
+    font-size: 30px;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+  a.name:hover { color: var(--ochre); }
+  .folio-row .name em { font-size: 24px; color: var(--ink-soft); }
+  .folio-row .dots {
+    flex: 1;
+    border-bottom: 1px dotted rgba(36, 29, 19, 0.45);
+    transform: translateY(-6px);
+  }
+  .folio-row .tail {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ochre);
+    text-decoration: none;
+    flex: none;
+  }
+  .folio-note {
+    display: grid;
+    grid-template-columns: 100px 1fr 300px;
+    gap: 16px;
+    padding: 26px 0 90px;
+  }
+  .folio-note p {
+    max-width: 620px;
+    color: #453b2c;
+  }
+  .plate { justify-self: end; width: 264px; }
+  .plate img {
+    width: 100%; display: block;
+    border: 1px solid rgba(36, 29, 19, 0.35);
+    padding: 6px;
+    background: var(--cream-deep);
+  }
+  .plate figcaption {
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ============ PEOPLE ============ */
+  .people { padding: 6vh 0 0; }
+  .people .body {
+    margin-top: 64px;
+    max-width: 660px;
+    font-size: clamp(22px, 1.9vw, 27px);
+    line-height: 1.5;
+  }
+  .people .mail {
+    display: inline-block;
+    margin-top: 48px;
+    font-style: italic;
+    font-size: clamp(26px, 2.4vw, 34px);
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(36,29,19,0.4);
+    padding-bottom: 4px;
+  }
+  .people .mail:hover { color: var(--ochre); border-bottom-color: var(--ochre); }
+
+  /* ============ FOOTER / FAR HORIZON ============ */
+  .coda {
+    position: relative;
+    margin-top: 14vh;
+    height: 64vh;
+    min-height: 430px;
+    overflow: clip;
+    display: flex;
+    align-items: flex-end;
+  }
+  .coda .art { position: absolute; inset: -14% 0; will-change: transform; }
+  .coda .art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+  .coda .veil-top {
+    position: absolute; top: -1px; left: 0; right: 0; height: 34%;
+    background: linear-gradient(to bottom, var(--cream), rgba(242,236,220,0));
+    pointer-events: none;
+  }
+  .coda .colophon {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 clamp(28px, 4.5vw, 72px) 30px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #4c4232;
+  }
+
+  @media (max-width: 820px) {
+    .q { grid-template-columns: 1fr; gap: 8px; padding: 60px 0; }
+    .folio-note { grid-template-columns: 1fr; }
+    .plate { justify-self: start; margin-top: 12px; }
+    nav.index { display: none; }
+    .hero { height: 110vh; min-height: 640px; }
+    .hero-copy { top: 20vh; }
+    .hero-copy h1 { white-space: normal; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .loaded .reveal { opacity: 1; transform: none; transition: none; }
+    .hero-art, .interlude .art, .coda .art { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <div class="hero-art" data-px="0.30"><img src="assets/hero-panorama.png" alt="A painted river valley at first light, the sun low on a distant horizon."></div>
+  <div class="masthead">
+    <a class="wordmark" href="#top">Long Horizon Research<small>San Francisco</small></a>
+    <nav class="index" aria-label="Contents">
+      <a href="#questions"><span>01</span><span class="dots"></span><span>Questions</span></a>
+      <a href="#instruments"><span>02</span><span class="dots"></span><span>Instruments</span></a>
+      <a href="#people"><span>03</span><span class="dots"></span><span>People</span></a>
+    </nav>
+  </div>
+  <div class="hero-copy">
+    <h1><span class="reveal">The agents have arrived.</span>
+        <span class="l2 reveal d1">The instruments have not.</span></h1>
+    <p class="intro reveal d2">Long Horizon Research is a small laboratory in San Francisco.
+    We study how people think, decide, and review when machines do most of the
+    drafting&nbsp;&mdash; and we build the instruments that keep human judgment in charge.</p>
+  </div>
+  <div class="hero-fade"></div>
+</header>
+
+<main>
+  <section class="sheet statement">
+    <div class="measure">
+      <blockquote>
+        Every edit, every comment, every acceptance and reversal is a trace of
+        human judgment. We think those traces are the most valuable data of the
+        coming decade &mdash; <em>and that almost nothing is built to honor them.</em>
+      </blockquote>
+      <p class="aside">The lab exists to close that gap: to make collaboration with
+      machines legible, attributable, and worth learning from.</p>
+    </div>
+  </section>
+
+  <section class="sheet questions" id="questions">
+    <div class="measure">
+      <div class="section-head mono"><span class="no">01</span><span class="dots"></span><span>Three standing questions</span></div>
+
+      <article class="q">
+        <div class="numeral">I<span>the surface</span></div>
+        <div>
+          <h3>What is the best possible surface for a person to think, decide,
+          and review, when machines do most of the drafting?</h3>
+          <p>Not a chat log, and not a wall of diffs. A person's attention is the
+          scarce resource in the loop; we design and test surfaces that spend it
+          only where judgment is actually required.</p>
+        </div>
+      </article>
+
+      <article class="q">
+        <div class="numeral">II<span>learning judgment</span></div>
+        <div>
+          <h3>Can a model learn a person's judgment from the collaboration itself?</h3>
+          <p>Edits, comments, acceptances, reversals &mdash; collected carefully,
+          the record of working together is training signal. We study personalization
+          and reinforcement learning on real work rather than on benchmarks.</p>
+        </div>
+      </article>
+
+      <article class="q">
+        <div class="numeral">III<span>the shared artifact</span></div>
+        <div>
+          <h3>How do many people and many agents share one artifact?</h3>
+          <p>Attribution, review, and control have to survive a document written
+          by ten hands, most of them mechanical. We work out what history, blame,
+          and consent look like at machine speed.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="interlude" aria-hidden="true">
+    <div class="art" data-px="-0.10"><img src="assets/detail-river.png" alt=""></div>
+    <div class="veil-top"></div>
+    <div class="veil-bottom"></div>
+  </div>
+
+  <section class="sheet instruments" id="instruments">
+    <div class="measure">
+      <div class="section-head mono"><span class="no">02</span><span class="dots"></span><span>Instruments</span></div>
+      <p class="lede">We publish what we learn, and we build what we need.
+      The instruments are how the questions get answered.</p>
+
+      <div class="folio">
+        <div class="folio-row">
+          <span class="no">No.&nbsp;I</span>
+          <a class="name" href="https://sundialhub.com">Sundial</a>
+          <span class="dots"></span>
+          <a class="tail" href="https://sundialhub.com">sundialhub.com&nbsp;&rarr;</a>
+        </div>
+        <div class="folio-note">
+          <span></span>
+          <p>A shared workspace where people and agents write together. Every edit
+          is attributed to its author, human or machine; every change can be
+          reviewed, kept, or reversed. Most of the lab's questions were first met
+          inside Sundial &mdash; and it is where the answers get tested.</p>
+          <figure class="plate">
+            <img src="assets/detail-trees.png" alt="Painted detail: dark pines above a misted valley.">
+            <figcaption><span>Pl.&nbsp;i</span><span>oil, detail</span></figcaption>
+          </figure>
+        </div>
+        <div class="folio-row">
+          <span class="no">No.&nbsp;II</span>
+          <span class="name"><em>in preparation</em></span>
+          <span class="dots"></span>
+          <span class="tail" style="color: var(--ink-soft);">&mdash;</span>
+        </div>
+        <div class="folio-row">
+          <span class="no">Papers</span>
+          <span class="name"><em>forthcoming</em></span>
+          <span class="dots"></span>
+          <span class="tail" style="color: var(--ink-soft);">&mdash;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet people" id="people">
+    <div class="measure">
+      <div class="section-head mono"><span class="no">03</span><span class="dots"></span><span>People</span></div>
+      <p class="body">The lab is small and hiring slowly: researchers and engineers
+      in personalization, reinforcement learning, and interfaces. If the questions
+      above already feel like yours, write to us.</p>
+      <a class="mail" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>
+    </div>
+  </section>
+</main>
+
+<footer class="coda">
+  <div class="art" data-px="-0.08"><img src="assets/far-horizon.png" alt=""></div>
+  <div class="veil-top"></div>
+  <div class="colophon">
+    <span>Long Horizon Research</span>
+    <span>San Francisco &middot; MMXXVI</span>
+  </div>
+</footer>
+
+<script>
+  // quiet, physical parallax: eased toward target, ~seconds to settle
+  const layers = [...document.querySelectorAll('[data-px]')].map(el => ({
+    el, k: parseFloat(el.dataset.px), cur: 0, tgt: 0
+  }));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame() {
+    const vh = innerHeight;
+    for (const l of layers) {
+      const r = l.el.parentElement.getBoundingClientRect();
+      const center = r.top + r.height / 2 - vh / 2;
+      l.tgt = center * -l.k;
+      l.cur += (l.tgt - l.cur) * 0.07;
+      l.el.style.transform = `translate3d(0, ${l.cur.toFixed(2)}px, 0)`;
+    }
+    requestAnimationFrame(frame);
+  }
+  if (!reduced) requestAnimationFrame(frame);
+  addEventListener('load', () => document.body.classList.add('loaded'));
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>html,body{margin:0;background:#222}</style></head>
+<body>
+<canvas id="c" width="2400" height="1500"></canvas>
+<script>
+// ---------- seeded RNG ----------
+let seed = 20260725;
+function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+function rr(a, b) { return a + (b - a) * rnd(); }
+function gauss() { return (rnd() + rnd() + rnd() - 1.5) / 1.5; }
+
+// ---------- 1D fractal value noise ----------
+function makeNoise1D(scale, octaves) {
+  const grids = [];
+  for (let o = 0; o < octaves; o++) {
+    const n = Math.ceil(2400 / (scale / Math.pow(2, o))) + 2;
+    const g = []; for (let i = 0; i < n; i++) g.push(rnd() * 2 - 1);
+    grids.push({ g, step: scale / Math.pow(2, o) });
+  }
+  return function (x) {
+    let v = 0, amp = 1, tot = 0;
+    for (const { g, step } of grids) {
+      const i = Math.floor(x / step), t = (x / step) - i;
+      const tt = t * t * (3 - 2 * t);
+      v += amp * (g[i] * (1 - tt) + g[i + 1] * tt);
+      tot += amp; amp *= 0.5;
+    }
+    return v / tot;
+  };
+}
+
+const W = 2400, H = 1500;
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d', { willReadFrequently: true });
+const HORIZON = 880; // y of the horizon line
+const SUNX = 1490, SUNY = HORIZON - 8;
+
+// ---------- helpers ----------
+function lerp(a, b, t) { return a + (b - a) * t; }
+function mixc(c1, c2, t) { return [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)]; }
+function css(c, a) { return `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`; }
+
+// ================= 1. SKY =================
+// stops from zenith to horizon
+const skyStops = [
+  [0.00, [96, 106, 122]],   // gray-blue zenith
+  [0.30, [143, 137, 140]],  // mauve gray
+  [0.52, [186, 158, 137]],  // rose tan
+  [0.72, [222, 189, 143]],  // warm gold
+  [0.88, [242, 216, 164]],  // pale gold
+  [1.00, [251, 236, 194]],  // luminous cream at horizon
+];
+function skyColorAt(t) {
+  for (let i = 0; i < skyStops.length - 1; i++) {
+    const [t0, c0] = skyStops[i], [t1, c1] = skyStops[i + 1];
+    if (t >= t0 && t <= t1) return mixc(c0, c1, (t - t0) / (t1 - t0));
+  }
+  return skyStops[skyStops.length - 1][1];
+}
+for (let y = 0; y < HORIZON; y++) {
+  const t = y / HORIZON;
+  ctx.fillStyle = css(skyColorAt(t), 1);
+  ctx.fillRect(0, y, W, 1);
+}
+
+// ================= 2. SUN GLOW =================
+function glow(x, y, r, col, a) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, css(col, a));
+  g.addColorStop(1, css(col, 0));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+}
+ctx.globalCompositeOperation = 'lighter';
+glow(SUNX, SUNY, 900, [255, 214, 140], 0.20);
+glow(SUNX, SUNY, 480, [255, 226, 160], 0.30);
+glow(SUNX, SUNY, 210, [255, 240, 200], 0.55);
+glow(SUNX, SUNY, 80, [255, 250, 232], 0.9);
+ctx.globalCompositeOperation = 'source-over';
+
+// ================= 3. CLOUDS =================
+// elongated painterly cloud banks
+function cloudBank(cx, cy, w, h, col, litCol, alpha, n) {
+  for (let i = 0; i < n; i++) {
+    const ex = cx + gauss() * w * 0.5;
+    const ey = cy + gauss() * h * 0.5;
+    const ew = rr(w * 0.10, w * 0.30);
+    const eh = ew * rr(0.10, 0.22);
+    // lit underside toward the sun
+    const towardSun = 1 - Math.min(1, Math.abs(ex - SUNX) / 1200);
+    const c = mixc(col, litCol, towardSun * rr(0.3, 0.9));
+    ctx.fillStyle = css(c, alpha * rr(0.5, 1));
+    ctx.beginPath();
+    ctx.ellipse(ex, ey, ew, eh, rr(-0.03, 0.03), 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+// upper cool banks
+cloudBank(450, 170, 900, 90, [126, 128, 142], [188, 168, 158], 0.10, 60);
+cloudBank(1750, 130, 1100, 100, [120, 124, 140], [180, 162, 152], 0.09, 60);
+cloudBank(1100, 300, 1500, 110, [140, 136, 146], [205, 178, 156], 0.10, 80);
+// mid warm-gray streaks
+cloudBank(600, 460, 1300, 90, [162, 148, 143], [228, 196, 156], 0.11, 90);
+cloudBank(1800, 520, 1200, 80, [168, 152, 142], [238, 205, 158], 0.11, 90);
+// low gilded streaks near horizon
+cloudBank(1200, 660, 2200, 60, [196, 170, 140], [250, 222, 168], 0.12, 110);
+cloudBank(1500, 760, 2000, 44, [210, 182, 144], [253, 232, 180], 0.13, 110);
+// thin dark bar clouds crossing the glow (classic luminism)
+function barCloud(cx, cy, len, th, col, a) {
+  for (let i = 0; i < 130; i++) {
+    const ex = cx + gauss() * len * 0.62;
+    const ey = cy + gauss() * th * 1.1;
+    const litT = 1 - Math.min(1, Math.hypot(ex - SUNX, (ey - SUNY) * 3) / 1100);
+    const c = mixc(col, [242, 196, 138], litT * rr(0.2, 0.6));
+    ctx.fillStyle = css(c, a * rr(0.3, 0.9));
+    ctx.beginPath();
+    ctx.ellipse(ex, ey, rr(len * 0.05, len * 0.16), rr(th * 0.18, th * 0.5), 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+barCloud(1350, 705, 950, 16, [128, 106, 96], 0.07);
+barCloud(1600, 790, 750, 12, [120, 98, 90], 0.07);
+barCloud(900, 620, 850, 14, [134, 114, 102], 0.06);
+barCloud(1150, 545, 1000, 15, [140, 122, 108], 0.05);
+barCloud(1850, 660, 700, 12, [130, 110, 98], 0.06);
+
+// re-assert glow over cloud edges + a soft low sun disc
+ctx.globalCompositeOperation = 'lighter';
+glow(SUNX, SUNY, 420, [255, 224, 150], 0.16);
+glow(SUNX, SUNY, 150, [255, 244, 214], 0.5);
+glow(SUNX, SUNY - 26, 46, [255, 252, 240], 0.85);
+glow(SUNX, SUNY - 26, 26, [255, 255, 248], 0.95);
+ctx.globalCompositeOperation = 'source-over';
+
+// ================= 4. DISTANT RIDGES =================
+// layers from far to near; far = lightest haze
+const ridges = [
+  { base: HORIZON + 2,  amp: 26, scale: 700, col: [214, 205, 186], haze: 0.55, h: 60 },
+  { base: HORIZON + 26, amp: 40, scale: 520, col: [178, 172, 158], haze: 0.35, h: 90 },
+  { base: HORIZON + 58, amp: 52, scale: 430, col: [138, 132, 114], haze: 0.20, h: 130 },
+];
+for (const r of ridges) {
+  const n = makeNoise1D(r.scale, 4);
+  ctx.beginPath();
+  ctx.moveTo(0, r.base + n(0) * r.amp);
+  for (let x = 0; x <= W; x += 4) ctx.lineTo(x, r.base + n(x) * r.amp - Math.abs(Math.sin(x * 0.0006 + 1.3)) * r.amp * 0.5);
+  ctx.lineTo(W, r.base + r.h + 60); ctx.lineTo(0, r.base + r.h + 60);
+  ctx.closePath();
+  ctx.fillStyle = css(r.col, 1);
+  ctx.fill();
+  // atmospheric haze wash over it (sky color near horizon)
+  const hz = ctx.createLinearGradient(0, r.base - r.amp, 0, r.base + r.h);
+  hz.addColorStop(0, css([251, 236, 194], r.haze));
+  hz.addColorStop(1, css([251, 236, 194], r.haze * 0.4));
+  ctx.fillStyle = hz;
+  ctx.fillRect(0, r.base - r.amp - 4, W, r.h + r.amp + 64);
+}
+
+// ================= 5. VALLEY FLOOR =================
+const VTOP = HORIZON + 120;
+for (let y = VTOP; y < H; y++) {
+  const t = (y - VTOP) / (H - VTOP);
+  const c = mixc([158, 148, 114], [66, 55, 40], Math.pow(t, 0.85));
+  ctx.fillStyle = css(c, 1);
+  ctx.fillRect(0, y, W, 1);
+}
+// warm dawn light pooling across the valley from the sun
+const pool = ctx.createRadialGradient(SUNX, VTOP + 40, 40, SUNX, VTOP + 40, 1500);
+pool.addColorStop(0, 'rgba(248,214,150,0.42)');
+pool.addColorStop(0.4, 'rgba(232,190,128,0.18)');
+pool.addColorStop(1, 'rgba(232,190,128,0)');
+ctx.fillStyle = pool; ctx.fillRect(0, VTOP - 10, W, H - VTOP + 10);
+// cool shadow wash on the left valley edge
+const cool = ctx.createLinearGradient(0, 0, 900, 0);
+cool.addColorStop(0, 'rgba(64,74,72,0.22)'); cool.addColorStop(1, 'rgba(64,74,72,0)');
+ctx.fillStyle = cool; ctx.fillRect(0, VTOP, 900, H - VTOP);
+// field patches, stronger and directional
+for (let i = 0; i < 130; i++) {
+  const y = rr(VTOP + 10, H - 180);
+  const t = (y - VTOP) / (H - VTOP);
+  const w = lerp(70, 460, t) * rr(0.5, 1.4);
+  const h = w * rr(0.05, 0.11);
+  const base = mixc([158, 148, 114], [66, 55, 40], Math.pow(t, 0.85));
+  const c = mixc(base, rnd() > 0.45 ? [188, 158, 96] : [84, 92, 58], rr(0.25, 0.6));
+  ctx.fillStyle = css(c, rr(0.25, 0.55));
+  ctx.beginPath(); ctx.ellipse(rr(0, W), y, w, h, rr(-0.04, 0.04), 0, Math.PI * 2); ctx.fill();
+}
+// hedgerow lines: clustered dabs following gentle horizontal boundaries
+for (let row = 0; row < 12; row++) {
+  const y0 = rr(VTOP + 40, H - 340);
+  const t0 = (y0 - VTOP) / (H - VTOP);
+  const x0 = rr(0, W), len = rr(120, 500) * (0.4 + t0);
+  const drift = rr(-0.06, 0.06);
+  for (let i = 0; i < 26; i++) {
+    const x = x0 + (i / 26) * len + gauss() * 12;
+    const y = y0 + (x - x0) * drift + gauss() * 4;
+    const s = lerp(2.5, 15, t0) * rr(0.6, 1.4);
+    ctx.fillStyle = css(mixc([72, 70, 46], [40, 34, 24], t0), rr(0.35, 0.75));
+    ctx.beginPath(); ctx.ellipse(x, y, s, s * rr(0.45, 0.7), 0, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+// ================= 6. RIVER =================
+// winding ribbon from bottom-left toward the sun at the horizon
+function riverPath(t) {
+  // t: 0 at horizon, 1 at bottom
+  const y = lerp(VTOP - 14, H - 60, Math.pow(t, 1.25));
+  const x = lerp(SUNX, 820, Math.pow(t, 0.85)) + Math.sin(t * 7.5) * 190 * t + Math.sin(t * 3.1 + 1) * 120 * t;
+  const w = lerp(3, 250, Math.pow(t, 2.1));
+  return { x, y, w };
+}
+// water: one smooth filled polygon (left bank down, right bank up)
+const NPTS = 300;
+const pts = [];
+for (let i = 0; i <= NPTS; i++) pts.push(riverPath(i / NPTS));
+// soft dark bank shadow first (slightly wider polygon)
+function fillRiver(widthMul, colorFn, alphaMul) {
+  ctx.beginPath();
+  for (let i = 0; i <= NPTS; i++) { const p = pts[i]; const x = p.x - p.w * 0.5 * widthMul; (i ? ctx.lineTo(x, p.y) : ctx.moveTo(x, p.y)); }
+  for (let i = NPTS; i >= 0; i--) { const p = pts[i]; ctx.lineTo(p.x + p.w * 0.5 * widthMul, p.y); }
+  ctx.closePath();
+  // vertical gradient along the run
+  const g = ctx.createLinearGradient(0, VTOP - 20, 0, H - 40);
+  for (let s = 0; s <= 6; s++) {
+    const t = s / 6;
+    const [c, a] = colorFn(t);
+    g.addColorStop(t, css(c, a * alphaMul));
+  }
+  ctx.fillStyle = g;
+  ctx.fill();
+}
+fillRiver(1.24, t => [mixc([120, 110, 84], [40, 32, 22], t), 0.55], 1);      // wet bank halo
+// water: warm gold near the sun end, cooler slate close by — a true sky reflection
+fillRiver(1.0, t => [mixc([250, 224, 158], [126, 128, 122], Math.pow(t, 0.75)), 0.97], 1);
+// gentle sun-glint down the middle, strongest toward the far end
+ctx.globalCompositeOperation = 'lighter';
+fillRiver(0.5, t => [[255, 232, 170], 0.22 * Math.pow(1 - t, 1.4)], 1);
+ctx.globalCompositeOperation = 'source-over';
+
+// ================= 7. FOREGROUND =================
+const fgNoise = makeNoise1D(500, 4);
+const FGBASE = H - 245;
+ctx.beginPath();
+ctx.moveTo(0, FGBASE + fgNoise(0) * 55);
+for (let x = 0; x <= W; x += 4) {
+  // dip in the middle so the river reads through
+  const dip = Math.exp(-Math.pow((x - 860) / 340, 2)) * 90;
+  ctx.lineTo(x, FGBASE + fgNoise(x) * 55 + dip);
+}
+ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+const fgGrad = ctx.createLinearGradient(0, FGBASE - 60, 0, H);
+fgGrad.addColorStop(0, 'rgba(58,46,32,1)');
+fgGrad.addColorStop(1, 'rgba(30,22,15,1)');
+ctx.fillStyle = fgGrad; ctx.fill();
+
+// faint warm light catching the foreground crest (dawn spill)
+for (let x = 0; x < W; x += 5) {
+  const dip = Math.exp(-Math.pow((x - 860) / 340, 2)) * 90;
+  const ybase = FGBASE + fgNoise(x) * 55 + dip;
+  const nearSun = 0.35 + 0.65 * Math.exp(-Math.pow((x - SUNX) / 900, 2));
+  ctx.strokeStyle = css([168, 118, 62], 0.10 * nearSun);
+  ctx.lineWidth = rr(2, 5);
+  ctx.beginPath();
+  ctx.moveTo(x - rr(4, 14), ybase + rr(1, 7));
+  ctx.lineTo(x + rr(4, 14), ybase + rr(1, 9));
+  ctx.stroke();
+}
+// broad umber modulation inside the dark mass
+for (let i = 0; i < 700; i++) {
+  const x = rr(0, W);
+  const dip = Math.exp(-Math.pow((x - 860) / 340, 2)) * 90;
+  const ytop = FGBASE + fgNoise(x) * 55 + dip;
+  const y = rr(ytop + 10, H);
+  const warm = rnd();
+  const c = warm > 0.6 ? [72, 52, 30] : (warm > 0.3 ? [48, 38, 26] : [24, 18, 12]);
+  ctx.strokeStyle = css(c, rr(0.12, 0.3));
+  ctx.lineWidth = rr(3, 9);
+  const len = rr(10, 46), ang = gauss() * 0.3;
+  ctx.beginPath();
+  ctx.moveTo(x - Math.cos(ang) * len / 2, y - Math.sin(ang) * len / 2);
+  ctx.lineTo(x + Math.cos(ang) * len / 2, y + Math.sin(ang) * len / 2);
+  ctx.stroke();
+}
+// scrub / grass tufts on the foreground edge
+for (let i = 0; i < 900; i++) {
+  const x = rr(0, W);
+  const dip = Math.exp(-Math.pow((x - 860) / 340, 2)) * 90;
+  const ybase = FGBASE + fgNoise(x) * 55 + dip;
+  const y = ybase + rr(0, H - ybase) * rnd();
+  const s = rr(2, 9) * (1 + (y - FGBASE) / 300);
+  const warm = rnd() > 0.75;
+  ctx.strokeStyle = css(warm ? [122, 88, 44] : [38, 30, 20], rr(0.25, 0.6));
+  ctx.lineWidth = rr(0.8, 2.2);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.quadraticCurveTo(x + gauss() * 4, y - s * 0.7, x + gauss() * 7, y - s);
+  ctx.stroke();
+}
+
+// ================= 8. TREES =================
+function tree(x, ybase, h, lean) {
+  const col = [26, 20, 13];
+  // trunk
+  ctx.strokeStyle = css(col, 0.95);
+  ctx.lineWidth = h * 0.030;
+  ctx.beginPath();
+  ctx.moveTo(x, ybase);
+  ctx.quadraticCurveTo(x + lean * h * 0.2, ybase - h * 0.55, x + lean * h * 0.42, ybase - h * 0.92);
+  ctx.stroke();
+  // limbs
+  for (let i = 0; i < 7; i++) {
+    const t = rr(0.35, 0.9);
+    const bx = x + lean * h * 0.2 * t * 2, by = ybase - h * t;
+    ctx.lineWidth = h * 0.012 * (1 - t) + 0.7;
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.quadraticCurveTo(bx + gauss() * h * 0.16, by - h * 0.08, bx + gauss() * h * 0.3, by - rr(0.05, 0.16) * h);
+    ctx.stroke();
+  }
+  // canopy: a few dense masses, each built from many small high-alpha dabs
+  for (let m = 0; m < 8; m++) {
+    const t = rr(0.5, 1.02);
+    const mx = x + lean * h * 0.42 * t + gauss() * h * 0.2;
+    const my = ybase - h * t * 0.9 + gauss() * h * 0.08;
+    const mr = rr(h * 0.07, h * 0.15);
+    for (let i = 0; i < 60; i++) {
+      const a = rnd() * Math.PI * 2, d = Math.pow(rnd(), 0.5) * mr;
+      ctx.fillStyle = css(col, rr(0.5, 0.95));
+      ctx.beginPath();
+      ctx.ellipse(mx + Math.cos(a) * d * 1.1, my + Math.sin(a) * d * 0.75,
+        rr(mr * 0.07, mr * 0.18), rr(mr * 0.05, mr * 0.13), rr(-0.5, 0.5), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // sparse leaf specks around the mass edge
+    for (let i = 0; i < 30; i++) {
+      const a = rnd() * Math.PI * 2, d = mr * rr(0.9, 1.5);
+      ctx.fillStyle = css(col, rr(0.3, 0.7));
+      ctx.beginPath();
+      ctx.ellipse(mx + Math.cos(a) * d * 1.4, my + Math.sin(a) * d * 0.7, rr(1, 4), rr(0.8, 2.4), rr(-1, 1), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+// right-side repoussoir group (classic composition device)
+tree(2210, H - 40, 500, -0.25);
+tree(2330, H - 20, 420, -0.1);
+tree(2110, H - 90, 300, -0.35);
+// left smaller
+tree(150, H - 60, 330, 0.3);
+tree(60, H - 30, 260, 0.2);
+
+// small distant birds
+ctx.strokeStyle = 'rgba(60,50,44,0.55)'; ctx.lineWidth = 1.6;
+[[1180, 420], [1225, 445], [1265, 415], [1320, 452], [1370, 430]].forEach(([bx, by]) => {
+  ctx.beginPath();
+  ctx.moveTo(bx - 7, by); ctx.quadraticCurveTo(bx - 2, by - 5, bx, by);
+  ctx.quadraticCurveTo(bx + 2, by - 5, bx + 7, by);
+  ctx.stroke();
+});
+
+// ================= 9. BRUSHSTROKE PASS =================
+// sample the image, repaint with directional strokes
+const img = ctx.getImageData(0, 0, W, H);
+function sample(x, y) {
+  const i = ((y | 0) * W + (x | 0)) * 4;
+  return [img.data[i], img.data[i + 1], img.data[i + 2]];
+}
+ctx.lineCap = 'round';
+// pass A: broad underpaint strokes
+for (let i = 0; i < 26000; i++) {
+  const x = rr(0, W), y = rr(0, H);
+  const c = sample(x, y);
+  const j = gauss() * 14, warmj = gauss() * 8;
+  const col = [c[0] + j + warmj, c[1] + j, c[2] + j - warmj];
+  let ang, len, wd, al;
+  if (y < HORIZON) { ang = gauss() * 0.05; len = rr(50, 130); wd = rr(6, 14); al = rr(0.08, 0.18); }
+  else if (y < FGBASE - 40) { ang = gauss() * 0.15; len = rr(30, 80); wd = rr(5, 11); al = rr(0.08, 0.2); }
+  else { ang = gauss() * 0.7; len = rr(14, 40); wd = rr(5, 12); al = rr(0.1, 0.22); }
+  ctx.strokeStyle = css(col, al);
+  ctx.lineWidth = wd;
+  ctx.beginPath();
+  ctx.moveTo(x - Math.cos(ang) * len / 2, y - Math.sin(ang) * len / 2);
+  // slight arc so strokes aren't ruler-straight
+  ctx.quadraticCurveTo(x + gauss() * 6, y + gauss() * 6, x + Math.cos(ang) * len / 2, y + Math.sin(ang) * len / 2);
+  ctx.stroke();
+}
+// pass B: smaller detail strokes with stronger hue variation
+for (let i = 0; i < 60000; i++) {
+  const x = rr(0, W), y = rr(0, H);
+  const c = sample(x, y);
+  const j = gauss() * 11, warmj = gauss() * 7;
+  const col = [c[0] + j + warmj, c[1] + j, c[2] + j - warmj];
+  let ang, len, wd, al;
+  if (y < HORIZON) { ang = gauss() * 0.07; len = rr(14, 44); wd = rr(2, 5.5); al = rr(0.12, 0.3); }
+  else if (y < FGBASE - 40) { ang = gauss() * 0.2; len = rr(8, 26); wd = rr(1.8, 4.5); al = rr(0.14, 0.32); }
+  else { ang = gauss() * 0.8; len = rr(5, 16); wd = rr(1.8, 5); al = rr(0.14, 0.34); }
+  ctx.strokeStyle = css(col, al);
+  ctx.lineWidth = wd;
+  ctx.beginPath();
+  ctx.moveTo(x - Math.cos(ang) * len / 2, y - Math.sin(ang) * len / 2);
+  ctx.lineTo(x + Math.cos(ang) * len / 2, y + Math.sin(ang) * len / 2);
+  ctx.stroke();
+}
+// rim light: warm catch on ridge tops near the sun
+ctx.globalCompositeOperation = 'lighter';
+for (const r of ridges) {
+  const n = makeNoise1D(r.scale, 4); // note: different noise instance; approximate ridgeline glow
+  for (let x = 0; x < W; x += 6) {
+    const nearSun = Math.exp(-Math.pow((x - SUNX) / 700, 2));
+    if (nearSun < 0.05) continue;
+    const y = r.base + n(x) * r.amp * 0.5;
+    ctx.fillStyle = css([255, 216, 150], 0.05 * nearSun);
+    ctx.beginPath(); ctx.ellipse(x, y, 10, 2.4, 0, 0, Math.PI * 2); ctx.fill();
+  }
+}
+ctx.globalCompositeOperation = 'source-over';
+
+// ================= 10. GLAZE + VIGNETTE + WEAVE =================
+// warm varnish
+ctx.globalCompositeOperation = 'multiply';
+ctx.fillStyle = 'rgba(226,204,160,0.10)';
+ctx.fillRect(0, 0, W, H);
+ctx.globalCompositeOperation = 'source-over';
+// vignette
+const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 1.05);
+vg.addColorStop(0, 'rgba(20,14,8,0)');
+vg.addColorStop(1, 'rgba(20,14,8,0.30)');
+ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+// canvas weave — irregular broken threads, very faint
+ctx.globalAlpha = 0.022;
+for (let y = 0; y < H; y += 4) {
+  let x = 0;
+  while (x < W) {
+    const seg = rr(40, 200);
+    ctx.fillStyle = rnd() > 0.5 ? '#000' : '#fff';
+    ctx.fillRect(x, y + (rnd() > 0.8 ? 1 : 0), seg, 1);
+    x += seg + rr(0, 60);
+  }
+}
+for (let x = 0; x < W; x += 4) {
+  let y = 0;
+  while (y < H) {
+    const seg = rr(30, 160);
+    ctx.fillStyle = rnd() > 0.5 ? '#fff' : '#000';
+    ctx.fillRect(x + (rnd() > 0.8 ? 1 : 0), y, 1, seg);
+    y += seg + rr(0, 50);
+  }
+}
+ctx.globalAlpha = 1;
+// grain
+const gimg = ctx.getImageData(0, 0, W, H);
+for (let i = 0; i < gimg.data.length; i += 4) {
+  const g = (rnd() - 0.5) * 10;
+  gimg.data[i] += g; gimg.data[i + 1] += g; gimg.data[i + 2] += g;
+}
+ctx.putImageData(gimg, 0, 0);
+
+window.PAINT_DONE = true;
+</script>
+</body>
+</html>

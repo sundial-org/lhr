@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Horizon Research</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f1eee8'/%3E%3Cpath d='M16 26 L16 6 M16 26 L6 12 M16 26 L26 12 M16 26 L9 8 M16 26 L23 8' stroke='%23131f56' stroke-width='2.2' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f1eee8;
+  --ink: #1c1a16;
+  --navy: #131f56;
+  --grid: rgba(19, 31, 86, 0.10);
+  --rule: rgba(28, 26, 22, 0.28);
+  --m: clamp(20px, 10.8vw, 156px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+
+/* faint canvas texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 40; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* the column grid, page-wide */
+.grid-lines {
+  position: absolute; inset: 0;
+  margin: 0 var(--m);
+  pointer-events: none;
+  z-index: 2;
+  background-image: linear-gradient(to right, var(--grid) 0, var(--grid) 1px, transparent 1px);
+  background-size: calc(100% / 7) 100%;
+  border-right: 1px solid var(--grid);
+}
+
+/* nav */
+.nav {
+  position: fixed; top: 24px; left: 24px; right: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 30;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(28, 26, 22, 0.08);
+  box-shadow: 0 1px 4px rgba(28, 26, 22, 0.07);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+}
+.chip svg { display: block; }
+.chip .lite { font-weight: 400; color: rgba(28, 26, 22, 0.62); margin-left: -4px; }
+.nav-right { display: flex; gap: 8px; }
+.nav-right .chip { font-weight: 400; font-size: 13.5px; transition: background 0.25s ease; }
+.nav-right .chip:hover { background: #fff; }
+
+/* hero */
+.hero { position: relative; height: 100vh; min-height: 620px; overflow: hidden; }
+.hero svg.fan {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
+  background: linear-gradient(to bottom, rgba(241,238,232,0) 0%, rgba(241,238,232,0.94) 62%, var(--paper) 100%);
+  z-index: 3;
+}
+.hero-foot {
+  position: absolute; left: var(--m); right: var(--m); bottom: 44px;
+  z-index: 5;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 3rem;
+}
+h1 {
+  font-size: clamp(28px, 2.6vw, 38px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  max-width: 17em;
+}
+.hero-sub {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 16.5px;
+  line-height: 1.45;
+  max-width: 26em;
+  color: rgba(28, 26, 22, 0.78);
+}
+
+/* sections */
+.section { position: relative; padding: 0 var(--m); }
+.rule { border-top: 1px solid var(--rule); }
+.label {
+  font-size: 14px; font-weight: 500;
+  padding-top: 14px;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  gap: 4rem;
+  padding-bottom: 9rem;
+}
+.big {
+  font-size: clamp(26px, 2.55vw, 37px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-top: 7.5rem;
+  max-width: 15em;
+}
+.prose {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: rgba(28, 26, 22, 0.88);
+  margin-top: 16rem;
+}
+.prose p { margin-bottom: 1.15em; }
+.prose a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* instrument row */
+.instrument {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  gap: 4rem;
+  padding: 3.2rem 0 7rem;
+}
+.instrument .art {
+  border: 1px solid rgba(28, 26, 22, 0.16);
+  background: #fff;
+  aspect-ratio: 16 / 9.4;
+  position: relative;
+  overflow: hidden;
+}
+.instrument .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.instrument h2 {
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 400;
+  margin-top: 0.4rem;
+}
+.instrument .meta {
+  font-size: 13.5px;
+  color: rgba(28, 26, 22, 0.6);
+  margin-top: 4px;
+}
+.instrument .desc {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.45;
+  margin-top: 1.1rem;
+  max-width: 30em;
+  color: rgba(28, 26, 22, 0.88);
+}
+.instrument .go {
+  display: inline-block;
+  margin-top: 1.4rem;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  font-size: 13.5px; font-weight: 500;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(28, 26, 22, 0.12);
+  border-radius: 999px;
+  padding: 8px 15px;
+  transition: background 0.25s ease;
+}
+.instrument .go:hover { background: #fff; }
+.ghost {
+  border-top: 1px solid rgba(28, 26, 22, 0.14);
+  padding: 0.9rem 0;
+  display: flex; justify-content: space-between;
+  font-size: 13.5px;
+  color: rgba(28, 26, 22, 0.5);
+}
+
+/* footer */
+.footer {
+  padding: 1rem var(--m) 2.4rem;
+  display: flex; justify-content: space-between;
+  font-size: 13px;
+  color: rgba(28, 26, 22, 0.55);
+}
+.footer a { text-decoration: none; }
+.footer a:hover { color: var(--ink); }
+
+@media (max-width: 900px) {
+  .two-col, .instrument { grid-template-columns: 1fr; gap: 1rem; }
+  .big { margin-top: 4rem; }
+  .prose { margin-top: 2rem; }
+  .hero-foot { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="chip" href="/">
+    <svg width="15" height="15" viewBox="0 0 32 32"><path d="M16 27 L16 5 M16 27 L5 12 M16 27 L27 12 M16 27 L9 7 M16 27 L23 7" stroke="#131f56" stroke-width="2.4" fill="none"/></svg>
+    <span>long horizon</span><span class="lite">research</span>
+  </a>
+  <div class="nav-right">
+    <a class="chip" href="https://sundialhub.com" target="_blank" rel="noreferrer">sundial</a>
+    <a class="chip" href="mailto:team@longhorizonresearch.com">contact</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <svg class="fan" id="fan" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div class="grid-lines"></div>
+  <div class="hero-foot">
+    <h1>The agents are here.<br>The instruments are not.</h1>
+    <p class="hero-sub">Long Horizon Research is a small lab in San Francisco. We build the surface where people and agents work together, and we study what it records.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="grid-lines"></div>
+  <div class="rule"><div class="label">Instruments</div></div>
+  <div class="instrument">
+    <div class="art">
+      <svg id="plate" viewBox="0 0 720 424" aria-hidden="true"></svg>
+    </div>
+    <div>
+      <h2>No. I · Sundial</h2>
+      <div class="meta">sundialhub.com · live</div>
+      <p class="desc">A shared workspace where people and agents write together. Every edit has an author, every change can be reviewed.</p>
+      <a class="go" href="https://sundialhub.com" target="_blank" rel="noreferrer">open sundial ↗</a>
+    </div>
+  </div>
+  <div class="ghost"><span>No. II</span><span>in preparation</span></div>
+  <div class="ghost" style="margin-bottom: 7rem"><span>No. III</span><span></span></div>
+</section>
+
+<section class="section">
+  <div class="grid-lines"></div>
+  <div class="rule"><div class="label">What we study</div></div>
+  <div class="two-col">
+    <h2 class="big">Can a model learn your judgment from working with you?</h2>
+    <div class="prose">
+      <p>Every edit, comment, acceptance and reversal is a trace of human judgment. Nothing like it exists on the internet, because it was never written down anywhere. We think the next models will learn from traces like these.</p>
+      <p>We work on three questions. What the best surface for thinking looks like when machines do most of the drafting. Whether a model can learn from collaboration when to act, when to ask, and when to leave things alone. And how several people and several agents can share one document without losing track of who did what.</p>
+      <p>We are a few people, hiring researchers and engineers in personalization, reinforcement learning and interfaces. If our work sounds interesting to you, write to us at <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section"><div class="rule"></div></div>
+<footer class="footer">
+  <span>Long Horizon Research · San Francisco</span>
+  <span><a href="https://sundialhub.com" target="_blank" rel="noreferrer">sundial</a> · <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a> · MMXXVI</span>
+</footer>
+
+<script>
+/* Hour-line fan for lat 37.7749 N, drawn as oversized navy strokes.
+   Same geometry as the dial: tan(theta) = sin(phi) * tan(H). */
+(function () {
+  const PHI = 37.7749 * Math.PI / 180;
+  const svg = document.getElementById('fan');
+  const W = 1440, H = 900;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const M = W * 0.108, colW = (W - 2 * M) / 7;
+  const foot = { x: W * 0.44, y: H * 1.74 };
+  // one fan path, drawn as segments with gaps so the mark feels cut, not radial
+  const strokes = [];
+  for (let hh = 12; hh <= 36; hh++) {
+    const h = hh / 2;
+    const half = hh % 2 === 1;
+    const ha = (h - 12) * 15 * Math.PI / 180;
+    const th = Math.atan2(Math.sin(PHI) * Math.sin(ha), Math.cos(ha));
+    let wid = 15 + 11 * Math.abs(Math.sin(th)) + (h % 3 === 0 ? 7 : 0);
+    if (half) wid *= 0.32;
+    const px = Math.cos(th) * wid / 2, py = Math.sin(th) * wid / 2;
+    // two segments per line with a gap, lengths varied deterministically
+    const segs = half
+      ? [[700 + (hh * 61) % 420, 1500 + (hh * 47) % 700]]
+      : h % 2 === 0
+        ? [[420 + (h * 37) % 160, 1150 + (h * 53) % 300], [1450 + (h * 29) % 260, 3200]]
+        : [[520 + (h * 41) % 200, 3200]];
+    for (const [r0, r1] of segs) {
+      const ax = foot.x + r0 * Math.sin(th), ay = foot.y - r0 * Math.cos(th);
+      const bx = foot.x + r1 * Math.sin(th), by = foot.y - r1 * Math.cos(th);
+      const f = 1 + (r1 - r0) / 2400;
+      strokes.push(`M${ax - px},${ay - py} L${bx - px * f * 2.1},${by - py * f * 2.1} L${bx + px * f * 2.1},${by + py * f * 2.1} L${ax + px},${ay + py} Z`);
+    }
+  }
+  const d = strokes.join(' ');
+  // slice the artwork by column: each column shows the same mark shifted vertically
+  const offs = [0, 64, -46, 18, -78, 40, -22];
+  let defs = '', use = '';
+  for (let i = 0; i < 7; i++) {
+    const x0 = M + i * colW;
+    defs += `<clipPath id="c${i}"><rect x="${x0}" y="-400" width="${colW}" height="${H + 800}"/></clipPath>`;
+    use += `<g clip-path="url(#c${i})" transform="translate(0 ${offs[i]})"><path d="${d}" fill="#131f56"/></g>`;
+  }
+  svg.innerHTML = `<defs>${defs}</defs>${use}`;
+})();
+
+/* Small plate drawing for the Sundial card */
+(function () {
+  const PHI = 37.7749 * Math.PI / 180;
+  const svg = document.getElementById('plate');
+  const W = 720, H = 424;
+  const foot = { x: W / 2, y: H - 40 };
+  let out = '';
+  const line = (th, r0, r1, w, o) => {
+    const ax = foot.x + r0 * Math.sin(th), ay = foot.y - r0 * Math.cos(th);
+    const bx = foot.x + r1 * Math.sin(th), by = foot.y - r1 * Math.cos(th);
+    return `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#131f56" stroke-opacity="${o}" stroke-width="${w}"/>`;
+  };
+  for (let h = 6; h <= 18; h++) {
+    const ha = (h - 12) * 15 * Math.PI / 180;
+    const th = Math.atan2(Math.sin(PHI) * Math.sin(ha), Math.cos(ha));
+    out += line(th, 30, 300, h === 12 ? 2.2 : 1.5, h === 12 ? 0.9 : 0.68);
+  }
+  out += `<line x1="30" y1="${foot.y}" x2="${W - 30}" y2="${foot.y}" stroke="#131f56" stroke-opacity="0.55" stroke-width="1.4"/>`;
+  /* tick arc */
+  for (let h = 6; h < 18; h++) {
+    const ha = ((h - 12) * 15 + 7.5) * Math.PI / 180;
+    const th = Math.atan2(Math.sin(PHI) * Math.sin(ha), Math.cos(ha));
+    out += line(th, 268, 286, 1.1, 0.45);
+  }
+  out += `<circle cx="${foot.x}" cy="${foot.y}" r="3" fill="#131f56"/>`;
+  /* live shadow, real time */
+  const now = new Date();
+  const day = Math.floor((now - Date.UTC(now.getUTCFullYear(), 0, 0)) / 864e5);
+  const eot = 9.87 * Math.sin(4 * Math.PI * (day - 81) / 364) - 7.53 * Math.cos(2 * Math.PI * (day - 81) / 364) - 1.5 * Math.sin(2 * Math.PI * (day - 81) / 364);
+  const utcMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const solarMin = ((utcMin + 4 * (-122.4194) + eot) % 1440 + 1440) % 1440;
+  const haNow = (solarMin - 720) / 4 * Math.PI / 180;
+  if (Math.abs(haNow) < Math.PI / 2) {
+    const th = Math.atan2(Math.sin(PHI) * Math.sin(haNow), Math.cos(haNow));
+    out += line(th, 0, 210, 2.4, 0.9).replace('stroke="#131f56"', 'stroke="#1c1a16"');
+  }
+  svg.innerHTML = out;
+})();
+</script>
+</body>
+</html>

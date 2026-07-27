@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Horizon Research</title>
+<meta name="description" content="A research lab in San Francisco studying how people and agents work together, and the instruments that keep a person in the driver’s seat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FBF7F1; --card:#FDFBF7; --line:#E7E0D4; --line-soft:#EFE9DE;
+  --ink:#0B0B0A; --body:#1A1917; --muted:#6E675C;
+  --taupe:#61584A; --taupe-deep:#564E42;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Helvetica Neue",Helvetica,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --pad:clamp(88px,11vw,168px);
+  --gut:clamp(20px,4.2vw,60px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--cream);color:var(--body);
+  font-family:var(--sans);font-size:17px;line-height:1.6;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--gut)}
+
+/* ---------------- type ---------------- */
+.display{
+  font-family:var(--serif);font-weight:400;color:var(--ink);
+  letter-spacing:-.038em;line-height:1.14;margin:0;
+  font-variant-ligatures:common-ligatures;
+}
+h1.display{font-size:clamp(38px,4.55vw,66px);letter-spacing:-.042em;line-height:1.1}
+h2.display{font-size:clamp(30px,3.25vw,47px)}
+h3.display{font-size:clamp(21px,1.75vw,26px);letter-spacing:-.03em;line-height:1.25}
+.lede{font-size:clamp(16px,1.2vw,17.5px);line-height:1.62;color:var(--body);margin:0}
+.muted{color:var(--muted)}
+.eyebrow{
+  font-family:var(--mono);font-weight:500;font-size:12.5px;line-height:1;
+  letter-spacing:.155em;text-transform:uppercase;color:var(--ink);margin:0;
+}
+.measure{max-width:33em}
+.measure-sm{max-width:27em}
+.display.measure-sm{max-width:16em}
+
+/* ---------------- buttons ---------------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.7em;
+  font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.135em;
+  text-transform:uppercase;padding:17px 26px;border-radius:2px;
+  border:1px solid transparent;cursor:pointer;white-space:nowrap;
+  transition:background .45s cubic-bezier(.2,.6,.2,1),color .45s cubic-bezier(.2,.6,.2,1),border-color .45s;
+}
+.btn-solid{background:#000;color:#fff}
+.btn-solid:hover{background:var(--taupe)}
+.btn-white{background:#fff;color:var(--ink)}
+.btn-white:hover{background:#000;color:#fff}
+.btn-ghost{background:transparent;color:var(--ink);border-color:rgba(11,11,10,.34)}
+.btn-ghost:hover{background:#000;color:#fff;border-color:#000}
+.btn-sm{padding:13px 20px;font-size:12.5px}
+
+/* ---------------- nav ---------------- */
+.nav{
+  position:absolute;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px var(--gut);
+}
+.brand{display:flex;align-items:center;gap:13px}
+.brand .mark{width:22px;height:22px;flex:none;opacity:.85}
+.brand .name{
+  font-family:var(--serif);font-size:19px;letter-spacing:-.022em;color:var(--ink);
+}
+.nav-right{display:flex;align-items:center;gap:9px}
+.nav-link{
+  font-size:14px;letter-spacing:-.005em;padding:13px 19px;border-radius:2px;
+  background:rgba(255,255,255,.74);backdrop-filter:blur(8px);
+  transition:background .4s;
+}
+.nav-link:hover{background:#fff}
+
+/* ---------------- hero ---------------- */
+.hero{
+  position:relative;min-height:min(100vh,880px);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;text-align:center;padding:150px var(--gut) 110px;
+}
+.hero-sky{
+  position:absolute;inset:-6%;width:112%;height:112%;max-width:none;object-fit:cover;
+  animation:drift 64s ease-in-out infinite alternate;
+}
+@keyframes drift{from{transform:scale(1.02) translate3d(-.7%,0,0)}to{transform:scale(1.06) translate3d(.7%,-.6%,0)}}
+.hero-inner{position:relative;max-width:930px}
+.hero h1{margin-bottom:26px}
+.hero .lede{margin:0 auto;max-width:30em}
+.hero .btn{margin-top:38px}
+
+/* ---------------- sections ---------------- */
+section{position:relative}
+.sec{padding:var(--pad) 0}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+.sec-head .eyebrow{margin-bottom:34px}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+/* about: text left, technical figure right */
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.86fr);gap:clamp(40px,7vw,110px);align-items:center}
+.about h2{margin-bottom:26px}
+.figure{position:relative;aspect-ratio:1/1;display:grid;place-items:center}
+.figure svg{width:100%;height:100%;overflow:visible}
+.tick{stroke:rgba(11,11,10,.28);stroke-width:.55;fill:none;vector-effect:non-scaling-stroke}
+.tick-dot{fill:#0B0B0A}
+
+/* three research cards */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr auto auto auto;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--card)}
+.card{
+  padding:30px 30px 28px;min-height:390px;display:flex;flex-direction:column;
+  border-left:1px solid var(--line);transition:background .5s;
+}
+@supports (grid-template-rows:subgrid){
+  .cards{min-height:clamp(330px,27vw,412px)}
+  .card{display:grid;grid-row:1/-1;grid-template-rows:subgrid;row-gap:0;min-height:0}
+  .card .body{display:contents}
+  .card h3{align-self:end}
+}
+.card:first-child{border-left:0}
+.card:hover{background:#FFFDF8}
+.card .num{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--muted)}
+.card .body{margin-top:auto}
+.card h3{margin:0 0 12px}
+.card p{margin:0;font-size:15.5px;line-height:1.58;color:var(--muted)}
+.card .arrow{margin-top:22px;width:15px;opacity:0;transform:translate(-5px,5px);transition:all .5s cubic-bezier(.2,.6,.2,1)}
+.card:hover .arrow{opacity:.55;transform:none}
+
+/* dark band */
+.dark{background:var(--taupe);color:#F6F1E9}
+.dark .display,.dark .eyebrow{color:#FDFAF4}
+.dark .lede{color:rgba(246,241,233,.76)}
+.dark .frame{
+  margin-top:clamp(64px,8vw,110px);position:relative;
+  border:1px solid rgba(253,250,244,.30);border-radius:2px;
+  padding:clamp(30px,5vw,64px);
+}
+.frame-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#FDFAF4}
+.frame-dot.tl{top:-3.5px;left:-3.5px}.frame-dot.tr{top:-3.5px;right:-3.5px}
+.frame-dot.bl{bottom:-3.5px;left:-3.5px}.frame-dot.br{bottom:-3.5px;right:-3.5px}
+.frame-label{
+  font-family:var(--mono);font-size:13px;letter-spacing:.18em;color:rgba(253,250,244,.8);
+  margin-top:26px;display:block;
+}
+.frame svg{width:100%;height:auto;display:block}
+
+/* instrument row */
+.inst{
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr);
+  gap:clamp(34px,5vw,72px);align-items:stretch;
+  background:var(--card);border:1px solid var(--line);border-radius:2px;
+  padding:clamp(28px,3.4vw,44px);
+}
+.inst-copy{display:flex;flex-direction:column;min-height:clamp(340px,32vw,470px)}
+.inst-kicker{display:flex;align-items:center;gap:11px}
+.inst-kicker .eyebrow{color:var(--ink)}
+.inst-body{margin-top:auto}
+.inst-body h3{margin:0 0 14px}
+.inst-body p{margin:0 0 24px;color:var(--muted);font-size:16px;max-width:30em}
+.inst-link{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+  border-bottom:1px solid rgba(11,11,10,.28);padding-bottom:5px;transition:border-color .4s,color .4s;
+}
+.inst-link:hover{border-color:var(--ink)}
+.inst-img{border-radius:2px;overflow:hidden;background:var(--line-soft)}
+.inst-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s cubic-bezier(.2,.6,.2,1)}
+.inst:hover .inst-img img{transform:scale(1.03)}
+.series-line{
+  margin-top:30px;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* two-up notes */
+.notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(26px,3vw,44px)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:2px;padding:clamp(22px,2.2vw,30px);display:flex;flex-direction:column}
+.note-img{border-radius:1px;overflow:hidden;margin-bottom:30px;aspect-ratio:16/9}
+.note-img img{width:100%;height:100%;object-fit:cover}
+.note .eyebrow{color:var(--muted);margin-bottom:18px}
+.note h3{margin:0 0 14px}
+.note p{margin:0 0 34px;color:var(--muted);font-size:15.5px}
+.note-meta{
+  display:flex;justify-content:space-between;margin-top:auto;padding-top:22px;
+  border-top:1px solid var(--line-soft);font-size:14px;color:var(--muted);
+}
+
+/* contact over photograph */
+.contact{position:relative;padding-top:var(--pad)}
+.contact-photo{position:absolute;left:0;right:0;bottom:0;height:66%;overflow:hidden}
+.contact-photo img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.contact-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);gap:clamp(36px,5vw,80px);align-items:start;padding-bottom:clamp(80px,9vw,130px)}
+.contact h2{margin-bottom:22px}
+.panel{background:#fff;border-radius:2px;padding:clamp(28px,3vw,44px);box-shadow:0 24px 70px -30px rgba(45,38,28,.34)}
+.panel .eyebrow{margin-bottom:28px}
+.roles{list-style:none;margin:0 0 32px;padding:0}
+.roles li{display:flex;gap:18px;padding:16px 0;border-bottom:1px solid var(--line-soft);font-size:16px}
+.roles li:first-child{border-top:1px solid var(--line-soft)}
+.roles .idx{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);padding-top:3px}
+.panel .btn{width:100%}
+.panel .note-line{margin:18px 0 0;font-size:14px;color:var(--muted)}
+
+/* footer */
+.foot{background:var(--taupe-deep);color:#F4EFE7;padding:clamp(72px,8vw,110px) 0 40px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.7fr) repeat(2,minmax(0,1fr));gap:44px}
+.foot .brand .name{color:#FDFAF4}
+.foot-tag{margin:26px 0 0;font-size:15.5px;color:rgba(244,239,231,.72);max-width:20em}
+.foot-mail{margin:34px 0 0;font-size:15.5px;color:rgba(244,239,231,.9)}
+.foot-mail a{border-bottom:1px solid rgba(244,239,231,.35)}
+.foot-col h4{
+  font-family:var(--mono);font-weight:500;font-size:12.5px;letter-spacing:.16em;
+  text-transform:uppercase;margin:0 0 24px;color:rgba(244,239,231,.9);
+}
+.foot-col ul{list-style:none;margin:0;padding:0}
+.foot-col li{margin-bottom:15px;display:flex;gap:14px;font-size:15px}
+.foot-col .n{font-family:var(--mono);font-size:13px;color:rgba(244,239,231,.55)}
+.foot-col a{color:rgba(244,239,231,.88);transition:color .35s}
+.foot-col a:hover{color:#fff}
+.foot-base{
+  margin-top:clamp(56px,7vw,90px);padding-top:26px;border-top:1px solid rgba(244,239,231,.18);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(244,239,231,.58);
+}
+
+/* reveal */
+.rise{opacity:0;transform:translateY(22px);transition:opacity 1s cubic-bezier(.2,.6,.2,1),transform 1s cubic-bezier(.2,.6,.2,1)}
+.rise.in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .about,.contact-grid,.inst{grid-template-columns:minmax(0,1fr)}
+  /* the email button must be allowed to shrink, or its nowrap widens the track */
+  .panel .btn{white-space:normal;overflow-wrap:anywhere;letter-spacing:.07em;font-size:12px;padding:16px 14px}
+  .cards,.notes,.foot-grid{grid-template-columns:1fr}
+  .card{border-left:0;border-top:1px solid var(--line);min-height:0}
+  .card:first-child{border-top:0}
+  .inst-copy{min-height:0}
+  .inst-img{aspect-ratio:16/10;order:-1}
+  .contact-photo{height:52%}
+  .nav-link{display:none}
+}
+@media (max-width:560px){
+  .nav{padding:16px var(--gut)}
+  .brand .mark{width:18px;height:18px}
+  .brand{gap:10px}
+  .brand .name{font-size:15px}
+  .nav-right .btn-sm{padding:11px 14px;font-size:11px;letter-spacing:.09em}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .rise{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ hero ============ -->
+<header class="hero">
+  <img class="hero-sky" src="img/hero-sky.png" alt="A vast sky at first light over a distant horizon">
+  <nav class="nav">
+    <a class="brand" href="#top">
+      <svg class="mark" viewBox="0 0 22 22" aria-hidden="true"><g fill="#0B0B0A"></g></svg>
+      <span class="name">Long&nbsp;Horizon&nbsp;Research</span>
+    </a>
+    <div class="nav-right">
+      <a class="nav-link" href="#research">Research</a>
+      <a class="btn btn-white btn-sm" href="#contact">Get in touch</a>
+    </div>
+  </nav>
+  <div class="hero-inner">
+    <h1 class="display">The agents are here.<br>The instruments are not.</h1>
+    <p class="lede">Long Horizon Research is a lab in San Francisco studying how people and agents work together, and building the instruments that keep a person in the driver’s seat.</p>
+    <a class="btn btn-solid" href="#research">See the research</a>
+  </div>
+</header>
+
+<!-- ============ about ============ -->
+<section class="sec" id="about">
+  <div class="wrap about">
+    <div class="rise">
+      <p class="eyebrow" style="margin-bottom:34px">About the lab</p>
+      <h2 class="display">Drafting got cheap. Judgment did not.</h2>
+      <p class="lede muted measure" style="max-width:30em">Machines now produce more text, more code and more analysis than any person can read. What is missing is not output. It is the instrument that lets one person hold all of it, see exactly what changed, and decide what stands.</p>
+    </div>
+    <div class="figure rise" data-figure="nested" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ research ============ -->
+<section class="sec" id="research" style="padding-top:0">
+  <div class="wrap">
+    <div class="rise" style="margin-bottom:clamp(48px,6vw,78px)">
+      <p class="eyebrow" style="margin-bottom:30px">Research</p>
+      <h2 class="display" style="margin-bottom:20px">Three open questions</h2>
+      <p class="lede muted measure-sm">We work on the parts of human and agent collaboration that nobody has settled yet.</p>
+    </div>
+    <div class="cards rise">
+      <article class="card">
+        <span class="num">01</span>
+        <div class="body">
+          <h3 class="display">The surface</h3>
+          <p>What is the best place for a person to think, decide and review, when machines are doing most of the drafting?</p>
+          <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="#0B0B0A" stroke-width="1.4"><path d="M4 12L12 4M12 4H5.5M12 4v6.5"/></svg>
+        </div>
+      </article>
+      <article class="card">
+        <span class="num">02</span>
+        <div class="body">
+          <h3 class="display">Learned judgment</h3>
+          <p>Can a model learn a person’s judgment from the collaboration itself? Every edit, comment, acceptance and reversal is a trace of what someone actually wanted.</p>
+          <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="#0B0B0A" stroke-width="1.4"><path d="M4 12L12 4M12 4H5.5M12 4v6.5"/></svg>
+        </div>
+      </article>
+      <article class="card">
+        <span class="num">03</span>
+        <div class="body">
+          <h3 class="display">Many hands</h3>
+          <p>How do several people and several agents share one document without anyone losing track of who did what?</p>
+          <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="#0B0B0A" stroke-width="1.4"><path d="M4 12L12 4M12 4H5.5M12 4v6.5"/></svg>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ position (dark) ============ -->
+<section class="sec dark" id="position">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div>
+        <p class="eyebrow" style="margin-bottom:34px">Our position</p>
+        <h2 class="display measure-sm">Judgment is the scarce thing. Every instrument we build is a way to record it, read it back, and hand it forward.</h2>
+      </div>
+      <a class="btn btn-white" href="#contact">Work with us</a>
+    </div>
+    <div class="frame rise">
+      <span class="frame-dot tl"></span><span class="frame-dot tr"></span>
+      <span class="frame-dot bl"></span><span class="frame-dot br"></span>
+      <div data-figure="trace" aria-hidden="true"></div>
+      <span class="frame-label">Trace</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ instruments ============ -->
+<section class="sec" id="instruments">
+  <div class="wrap">
+    <div class="rise" style="margin-bottom:clamp(48px,6vw,78px)">
+      <p class="eyebrow" style="margin-bottom:30px">Instruments</p>
+      <h2 class="display" style="margin-bottom:20px">Sundial</h2>
+      <p class="lede muted measure-sm">The first instrument to come out of the lab. Others are being built behind it.</p>
+    </div>
+    <div class="inst rise">
+      <div class="inst-copy">
+        <div class="inst-kicker">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="#0B0B0A" stroke-width="1.15" aria-hidden="true">
+            <circle cx="5.6" cy="5.6" r="3.1"/><circle cx="11.4" cy="5.6" r="3.1"/><circle cx="8.5" cy="11.4" r="3.1"/>
+          </svg>
+          <span class="eyebrow">Shared workspace</span>
+        </div>
+        <div class="inst-body">
+          <h3 class="display">People and agents writing in the same document</h3>
+          <p>Hand a section to an agent and keep reading. Every edit is attributed and every change is reviewable, so you can see precisely what was touched, line by line, and keep it or take it back.</p>
+          <a class="inst-link" href="https://sundialhub.com" target="_blank" rel="noopener">sundialhub.com &#8599;</a>
+        </div>
+      </div>
+      <div class="inst-img"><img src="img/instrument-sky.png" alt="Warm morning light spread across a wide sky"></div>
+    </div>
+    <p class="series-line rise">First of a series</p>
+  </div>
+</section>
+
+<!-- ============ notes ============ -->
+<section class="sec" id="notes" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head rise" style="margin-bottom:clamp(44px,5vw,68px)">
+      <div>
+        <p class="eyebrow" style="margin-bottom:30px">Threads</p>
+        <h2 class="display" style="margin-bottom:20px">Learning judgment from real work</h2>
+        <p class="lede muted measure-sm">Two halves of the same question, pulled apart.</p>
+      </div>
+      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+    </div>
+    <div class="notes rise">
+      <article class="note">
+        <div class="note-img"><img src="img/note-warm.png" alt="Soft warm field of light"></div>
+        <p class="eyebrow">Personalization</p>
+        <h3 class="display">A model that learns one person’s taste</h3>
+        <p>Preferences are easy to state and hard to state well. We are interested in whether the record of how someone works, what they accept and what they quietly reverse, describes their taste better than anything they could write down.</p>
+        <div class="note-meta"><span>Long Horizon Research</span><span>Open</span></div>
+      </article>
+      <article class="note">
+        <div class="note-img"><img src="img/note-cool.png" alt="Soft cool field of light"></div>
+        <p class="eyebrow">Reinforcement learning</p>
+        <h3 class="display">Signal from work, not from benchmarks</h3>
+        <p>A document being written by a team is dense with judgment already. We are studying how to turn edits, comments, acceptances and reversals into a reward a model can actually learn from without flattening the person behind them.</p>
+        <div class="note-meta"><span>Long Horizon Research</span><span>Open</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ contact ============ -->
+<section class="contact" id="contact">
+  <div class="contact-photo"><img src="img/contact-sky.png" alt="Dawn light over a far field"></div>
+  <div class="wrap contact-grid">
+    <div class="rise">
+      <p class="eyebrow" style="margin-bottom:30px">Careers</p>
+      <h2 class="display">We are hiring researchers and engineers.</h2>
+      <p class="lede muted measure-sm">If you have been circling these questions on your own, we would like to hear from you. San Francisco.</p>
+    </div>
+    <div class="panel rise">
+      <p class="eyebrow">Open roles</p>
+      <ul class="roles">
+        <li><span class="idx">01</span><span>Research, personalization</span></li>
+        <li><span class="idx">02</span><span>Research, reinforcement learning on real work</span></li>
+        <li><span class="idx">03</span><span>Engineering, interfaces</span></li>
+      </ul>
+      <a class="btn btn-solid" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>
+      <p class="note-line">Tell us what you have been working on. A link is worth more than a resume.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ footer ============ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">
+          <svg class="mark" viewBox="0 0 22 22" aria-hidden="true"><g fill="#FDFAF4"></g></svg>
+          <span class="name">Long&nbsp;Horizon&nbsp;Research</span>
+        </div>
+        <p class="foot-tag">Instruments for people who work with agents.</p>
+        <p class="foot-mail">Email: <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></p>
+      </div>
+      <div class="foot-col">
+        <h4>Lab</h4>
+        <ul>
+          <li><span class="n">1.1</span><a href="#research">Research</a></li>
+          <li><span class="n">1.2</span><a href="#position">Position</a></li>
+          <li><span class="n">1.3</span><a href="#contact">Careers</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Instruments</h4>
+        <ul>
+          <li><span class="n">2.1</span><a href="https://sundialhub.com" target="_blank" rel="noopener">Sundial</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>San Francisco</span>
+      <span>&copy; 2026 Long Horizon Research</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* --- wordmark: a small dot matrix, denser toward the lower right --- */
+  document.querySelectorAll('.brand .mark g').forEach(function(g){
+    var n = 6, parts = '';
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var o = 0.18 + 0.78 * ((x + y) / (2 * (n - 1)));
+      parts += '<circle cx="' + (1.8 + x * 3.7) + '" cy="' + (1.8 + y * 3.7) +
+               '" r="1.32" opacity="' + o.toFixed(2) + '"/>';
+    }
+    g.innerHTML = parts;
+  });
+
+  /* --- technical dot figures, in the source's drafting-diagram register --- */
+  function rand(seed){ return function(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }; }
+
+  function matrix(cols, rows, r, cx, cy, falloff, dark, seed){
+    var rnd = rand(seed), out = '';
+    for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) {
+      var dx = (x + .5) / cols - cx, dy = (y + .5) / rows - cy;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      var o = Math.max(0, 1 - d / falloff) * (0.42 + 0.58 * rnd());
+      if (o < 0.05) continue;
+      var px = x + .5, py = y + .5;
+      /* a scatter of hollow rings, the way a plotted diagram reads */
+      if (rnd() > 0.955) {
+        out += '<circle cx="' + px + '" cy="' + py + '" r="' + (r * 1.15) + '" fill="none" stroke="' + dark +
+               '" stroke-width="' + (r * .5) + '" opacity="' + Math.min(1, o + .25).toFixed(2) + '"/>';
+      } else {
+        out += '<circle cx="' + px + '" cy="' + py + '" r="' + r + '" fill="' + dark +
+               '" opacity="' + o.toFixed(2) + '"/>';
+      }
+    }
+    return out;
+  }
+
+  var nested = document.querySelector('[data-figure="nested"]');
+  if (nested) {
+    var C = 34, R = 34;
+    nested.innerHTML =
+      '<svg viewBox="-5 -5 ' + (C + 10) + ' ' + (R + 10) + '">' +
+        matrix(C, R, .34, .5, .5, .82, '#0B0B0A', 7) +
+        /* inner plate */
+        '<rect x="' + (C * .34) + '" y="' + (R * .34) + '" width="' + (C * .32) + '" height="' + (R * .32) +
+          '" fill="#FDFBF7" stroke="rgba(11,11,10,.5)" stroke-width=".18"/>' +
+        '<g transform="translate(' + (C * .375) + ' ' + (R * .375) + ')">' +
+          matrix(8, 8, .30, .62, .68, .95, '#0B0B0A', 31) + '</g>' +
+        /* crosshair ticks at the corners */
+        '<path class="tick" d="M-4 0H' + (C + 4) + 'M-4 ' + R + 'H' + (C + 4) +
+          'M0 -4V' + (R + 4) + 'M' + C + ' -4V' + (R + 4) + '"/>' +
+        '<g class="tick-dot">' +
+          '<circle cx="0" cy="0" r=".42"/><circle cx="' + C + '" cy="0" r=".42"/>' +
+          '<circle cx="0" cy="' + R + '" r=".42"/><circle cx="' + C + '" cy="' + R + '" r=".42"/>' +
+          '<circle cx="' + (C * .34) + '" cy="' + (R * .34) + '" r=".38"/>' +
+          '<circle cx="' + (C * .66) + '" cy="' + (R * .34) + '" r=".38"/>' +
+          '<circle cx="' + (C * .34) + '" cy="' + (R * .66) + '" r=".38"/>' +
+          '<circle cx="' + (C * .66) + '" cy="' + (R * .66) + '" r=".38"/>' +
+        '</g>' +
+      '</svg>';
+  }
+
+  var trace = document.querySelector('[data-figure="trace"]');
+  if (trace) {
+    var TC = 96, TR = 22;
+    trace.innerHTML = '<svg viewBox="0 0 ' + TC + ' ' + TR + '">' +
+      matrix(TC, TR, .33, .12, .5, 1.5, '#FDFAF4', 91) + '</svg>';
+  }
+
+  /* --- quiet reveal on scroll --- */
+  var els = document.querySelectorAll('.rise');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.style.transitionDelay = (e.target.dataset.delay || '0') + 'ms';
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

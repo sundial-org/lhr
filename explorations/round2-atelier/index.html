@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Horizon Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Pinyon+Script&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7edd3;
+    --ink: #241b10;
+    --ink-soft: #4f4130;
+    --sepia: #7c6a4f;
+    --seal: #7c2b19;
+    --rule: rgba(60, 45, 25, 0.28);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  img { height: auto; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "EB Garamond", Georgia, serif;
+    font-size: 19px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* paper grain + edge light */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 40; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.20;
+    mix-blend-mode: multiply;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; z-index: 41; pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 50% 8%, rgba(255,252,240,0.55), rgba(255,252,240,0) 55%),
+      radial-gradient(140% 120% at 50% 105%, rgba(94,72,40,0.16), rgba(94,72,40,0) 55%),
+      linear-gradient(90deg, rgba(94,72,40,0.10), rgba(94,72,40,0) 6%, rgba(94,72,40,0) 94%, rgba(94,72,40,0.10));
+  }
+
+  ::selection { background: rgba(124, 43, 25, 0.18); }
+  a { color: inherit; }
+
+  .mono {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .page { max-width: 1120px; margin: 0 auto; padding: 0 48px; }
+
+  /* ============ title page ============ */
+  header { padding-top: 64px; text-align: center; }
+  .apparatus {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+  .wordmark {
+    font-family: "Pinyon Script", cursive;
+    font-size: clamp(44px, 5.4vw, 64px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-top: 52px;
+    color: var(--ink);
+  }
+  .wordmark .amp { padding: 0 0.04em; }
+  .sub {
+    margin-top: 18px;
+  }
+
+  .frontis {
+    position: relative;
+    margin: 18px auto 0;
+    max-width: 780px;
+  }
+  .frontis img {
+    width: 100%; display: block;
+    -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 62%, transparent 100%);
+            mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 62%, transparent 100%);
+    animation: inkreveal 2.6s cubic-bezier(0.22, 0.6, 0.24, 1) both;
+  }
+  @keyframes inkreveal {
+    0%   { opacity: 0; filter: blur(6px) sepia(0.4); }
+    60%  { opacity: 0.85; }
+    100% { opacity: 1; filter: blur(0) sepia(0); }
+  }
+
+  h1 {
+    text-wrap: balance;
+    font-weight: 400;
+    font-size: clamp(46px, 6.4vw, 84px);
+    line-height: 1.06;
+    letter-spacing: -0.005em;
+    margin-top: 8px;
+  }
+  h1 .it { font-style: italic; font-weight: 400; }
+  .lede {
+    max-width: 34em;
+    margin: 34px auto 0;
+    font-size: 21px;
+    color: var(--ink-soft);
+  }
+
+  /* dotted-leader menu */
+  nav.leaders {
+    margin: 76px auto 0;
+    max-width: 400px;
+    text-align: left;
+  }
+  nav.leaders a {
+    display: flex; align-items: baseline; gap: 0.9em;
+    text-decoration: none;
+    padding: 9px 0;
+    color: var(--ink-soft);
+    transition: color 0.25s ease;
+  }
+  nav.leaders a:hover, nav.leaders a:focus-visible { color: var(--seal); }
+  nav.leaders .dots {
+    flex: 1; min-width: 2em;
+    border-bottom: 1.5px dotted currentColor;
+    opacity: 0.55;
+    transform: translateY(-4px);
+  }
+
+  /* ============ sections ============ */
+  section { padding-top: 150px; }
+  .section-head { text-align: center; }
+  .section-head .fleuron {
+    width: 150px; display: block; margin: 0 auto 10px;
+    filter: brightness(1.05);
+    -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 45%, transparent 96%);
+            mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 45%, transparent 96%);
+  }
+  .section-head h2 {
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.18em;
+    font-size: 34px;
+    margin-top: 2px;
+  }
+  .section-head .note {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    font-size: 20px;
+  }
+
+  /* plates */
+  .plate {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+    margin-top: 96px;
+  }
+  .plate:nth-of-type(even) .plate-art { order: 2; }
+  .plate-art img {
+    width: 100%; max-width: 460px; display: block; margin: 0 auto;
+    -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 52%, transparent 98%);
+            mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 52%, transparent 98%);
+  }
+  .plate-copy .mono { display: block; margin-bottom: 18px; color: var(--seal); }
+  .plate-copy h3 {
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(30px, 3vw, 40px);
+    line-height: 1.15;
+  }
+  .plate-copy p {
+    margin-top: 18px;
+    color: var(--ink-soft);
+    max-width: 30em;
+  }
+
+  /* ============ catalogue ============ */
+  .catalogue {
+    max-width: 780px;
+    margin: 84px auto 0;
+  }
+  .row {
+    display: flex; align-items: baseline; gap: 1.1em;
+    padding: 26px 0 10px;
+  }
+  .row + .entry-note { border-bottom: 1px solid var(--rule); padding-bottom: 26px; }
+  .row .no { color: var(--seal); }
+  .row .name {
+    font-size: 30px;
+    line-height: 1;
+  }
+  .row .name a {
+    text-decoration: none;
+    border-bottom: 1px solid rgba(60,45,25,0.26);
+    transition: border-color 0.25s ease, color 0.25s ease;
+  }
+  .row .name a:hover, .row .name a:focus-visible { color: var(--seal); border-color: var(--seal); }
+  .row .name .tbd { color: rgba(60, 45, 25, 0.42); font-style: italic; font-size: 26px; }
+  .row .dots {
+    flex: 1; min-width: 2em;
+    border-bottom: 1.5px dotted rgba(60,45,25,0.5);
+    transform: translateY(-5px);
+  }
+  .row .status { letter-spacing: 0.18em; }
+  .row .status.live { color: var(--seal); }
+  .entry-note {
+    color: var(--ink-soft);
+    padding-left: calc(2.4em + 1.1em);
+    padding-right: 26%;
+    font-size: 18px;
+  }
+  .row.dim { border-bottom: 1px solid var(--rule); padding-bottom: 26px; }
+  .row.dim .dots { border-color: rgba(60,45,25,0.3); }
+  .row.dim .status { color: rgba(60,45,25,0.45); }
+  .catalogue .after {
+    font-style: italic;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-top: 44px;
+  }
+
+  /* ============ colophon ============ */
+  footer {
+    margin-top: 170px;
+    padding-bottom: 90px;
+    text-align: center;
+  }
+  footer .rule {
+    height: 1px; background: var(--rule);
+    max-width: 1120px; margin: 0 auto;
+  }
+  footer .inner { padding-top: 64px; }
+  footer h2 {
+    text-wrap: balance;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 46px);
+    line-height: 1.2;
+  }
+  footer h2 .it { font-style: italic; }
+  footer .roles {
+    margin-top: 16px;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 21px;
+  }
+  footer .mail {
+    display: inline-block;
+    margin-top: 34px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 15px 28px;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  footer .mail:hover, footer .mail:focus-visible { background: var(--ink); color: var(--paper); }
+  footer .imprint {
+    margin-top: 72px;
+    font-style: italic;
+    color: var(--sepia);
+    font-size: 17px;
+  }
+  footer .imprint .mono { display: block; margin-top: 14px; color: var(--sepia); font-style: normal; }
+
+  .ink { transition: opacity 1.8s cubic-bezier(0.22, 0.6, 0.24, 1), filter 1.8s cubic-bezier(0.22, 0.6, 0.24, 1); }
+  .ink-wait { opacity: 0.12; filter: blur(4px); }
+  @media (prefers-reduced-motion: reduce) {
+    .frontis img { animation: none; }
+    .ink, .ink-wait { opacity: 1; filter: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+  @media (max-width: 860px) {
+    body { font-size: 17px; }
+    .page { padding: 0 24px; }
+    .plate { grid-template-columns: 1fr; gap: 12px; margin-top: 72px; }
+    .plate:nth-of-type(even) .plate-art { order: 0; }
+    .entry-note { padding-left: 0; }
+    .row .name { font-size: 24px; }
+    .apparatus { flex-direction: column; gap: 6px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <div class="apparatus mono">
+      <span>Long Horizon Research</span>
+      <span>San Francisco &middot; MMXXVI</span>
+    </div>
+
+    <div class="wordmark">Long Horizon Research</div>
+    <p class="sub mono">A laboratory for the study of human&#8202;&ndash;&#8202;agent collaboration</p>
+
+    <figure class="frontis">
+      <img src="frontispiece-crop.png" alt="Copperplate engraving of two hands, one human and one mechanical, writing the same line with crossed quills" width="1186" height="752">
+    </figure>
+
+    <h1>The agents are here.<br><span class="it">The instruments are not.</span></h1>
+
+    <p class="lede">Machines now do most of the drafting. What remains scarce is the apparatus a person needs to think, decide, and review at that pace &mdash; so we are building it, and studying what it teaches us.</p>
+
+    <nav class="leaders mono" aria-label="Contents">
+      <a href="#inquiries"><span>01</span><span class="dots"></span><span>Lines of inquiry</span></a>
+      <a href="#instruments"><span>02</span><span class="dots"></span><span>Instruments</span></a>
+      <a href="#colophon"><span>03</span><span class="dots"></span><span>Join the lab</span></a>
+    </nav>
+  </header>
+
+  <section id="inquiries">
+    <div class="section-head">
+      <img class="fleuron" src="fleuron-crop2.png" alt="" width="470" height="193">
+      <h2>Lines of Inquiry</h2>
+      <p class="note">Three questions, pursued on real work rather than benchmarks.</p>
+    </div>
+
+    <article class="plate">
+      <div class="plate-art"><img class="ink" src="plate-lens-crop.png" alt="Engraving of a reading lens on a brass stand over an open manuscript"></div>
+      <div class="plate-copy">
+        <span class="mono">Plate I &mdash; The reviewing surface</span>
+        <h3>Where should a person stand when the machine holds the pen?</h3>
+        <p>When drafting is cheap, judgment becomes the work. We ask what the best possible surface looks like for a person to think, decide, and review &mdash; an instrument for reading at the speed of writing.</p>
+      </div>
+    </article>
+
+    <article class="plate">
+      <div class="plate-art"><img class="ink" src="plate-burin-crop.png" alt="Engraving of a hand cutting a line into a copper plate with a burin"></div>
+      <div class="plate-copy">
+        <span class="mono">Plate II &mdash; Judgment, engraved</span>
+        <h3>Every correction is a cut the author leaves in the plate.</h3>
+        <p>Each edit, comment, acceptance, and reversal is a trace of human judgment. We study how a model can learn a particular person&rsquo;s judgment from the collaboration itself &mdash; personalization, and reinforcement on real work.</p>
+      </div>
+    </article>
+
+    <article class="plate">
+      <div class="plate-art"><img class="ink" src="plate-hands-crop.png" alt="Engraving of four hands, human and mechanical, working over one shared sheet"></div>
+      <div class="plate-copy">
+        <span class="mono">Plate III &mdash; Many hands, one sheet</span>
+        <h3>A crowded page must still answer to its author.</h3>
+        <p>Many people and many agents will share single artifacts. We ask how attribution, review, and control survive when the number of hands multiplies and the pace becomes mechanical.</p>
+      </div>
+    </article>
+  </section>
+
+  <section id="instruments">
+    <div class="section-head">
+      <img class="fleuron" src="fleuron-crop2.png" alt="" width="470" height="193">
+      <h2>A Catalogue of Instruments</h2>
+      <p class="note">The laboratory publishes its findings as working instruments. The first is in use.</p>
+    </div>
+
+    <div class="catalogue">
+      <div class="row">
+        <span class="no mono">No.&thinsp;1</span>
+        <span class="name"><a href="https://sundialhub.com">Sundial</a></span>
+        <span class="dots"></span>
+        <span class="status mono live">In use</span>
+      </div>
+      <p class="entry-note">A shared workspace where people and agents write together &mdash; every edit attributed to its hand, every change held open for review.</p>
+
+      <div class="row dim">
+        <span class="no mono">No.&thinsp;2</span>
+        <span class="name"><span class="tbd">untitled</span></span>
+        <span class="dots"></span>
+        <span class="status mono">In preparation</span>
+      </div>
+
+      <div class="row dim">
+        <span class="no mono">No.&thinsp;3</span>
+        <span class="name"><span class="tbd">untitled</span></span>
+        <span class="dots"></span>
+        <span class="status mono">In preparation</span>
+      </div>
+
+      <p class="after">Instruments first; papers to follow.</p>
+    </div>
+  </section>
+
+  <footer id="colophon">
+    <div class="inner">
+      <h2>The bench has room for <span class="it">a few more hands.</span></h2>
+      <p class="roles">Researchers &amp; engineers &mdash; personalization, reinforcement learning, interfaces.</p>
+      <a class="mail" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a>
+      <p class="imprint">Set in Garamond &amp; Pinyon, with a mechanical hand.<span class="mono">Long Horizon Research &middot; San Francisco &middot; MMXXVI</span></p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.remove('ink-wait'); io.unobserve(e.target); }
+  }, { threshold: 0.35 });
+  document.querySelectorAll('.ink').forEach((el) => { el.classList.add('ink-wait'); io.observe(el); });
+</script>
+</body>
+</html>

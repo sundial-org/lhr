@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Horizon Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f2e9;
+    --ink: #1c1913;
+    --ink-soft: #4a453b;
+    --rule: #1c1913;
+    --seal: #a8331b;
+    --hairline: rgba(28, 25, 19, 0.35);
+    --measure: 1320px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Newsreader", georgia, serif;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 40;
+  }
+  ::selection { background: var(--seal); color: var(--paper); }
+
+  .sheet { max-width: var(--measure); margin: 0 auto; padding: 0 56px; }
+
+  .mono {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .u-link { border-bottom: 1px solid var(--hairline); transition: border-color 120ms ease, color 120ms ease; padding-bottom: 1px; }
+  .u-link:hover { color: var(--seal); border-color: var(--seal); }
+  a:focus-visible { outline: 2px solid var(--seal); outline-offset: 3px; }
+
+  /* ---------- running head ---------- */
+  .running-head {
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .running-head::before {
+    content: "";
+    display: block;
+    border-bottom: 3px solid var(--rule);
+    margin-top: 18px;
+  }
+  .running-head .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0 9px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { text-align: center; padding: 56px 0 0; }
+  .masthead .crest {
+    width: 108px; height: 108px; object-fit: cover; margin: 0 auto 26px; display: block;
+    mix-blend-mode: multiply;
+    filter: grayscale(1) brightness(1.16) contrast(1.22);
+  }
+  .masthead h1 {
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    font-weight: 380;
+    font-size: clamp(56px, 6.4vw, 92px);
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .masthead .dek {
+    font-family: "Newsreader", serif;
+    font-style: italic;
+    font-size: 21px;
+    color: var(--ink-soft);
+    margin-top: 22px;
+  }
+  .masthead .dateline { margin-top: 30px; color: var(--ink-soft); display: flex; justify-content: center; gap: 2.5em; }
+  .masthead .dateline .seal { color: var(--seal); }
+  .masthead .end-rule { margin-top: 26px; border-bottom: 1px solid var(--rule); }
+
+  /* ---------- lead ---------- */
+  .lead { padding: 96px 0 0; }
+  .lead h2 {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 330;
+    font-size: clamp(72px, 8.6vw, 124px);
+    line-height: 0.98;
+    letter-spacing: -0.022em;
+    max-width: 11em;
+  }
+  .lead h2 em {
+    font-style: italic;
+    font-weight: 360;
+  }
+  .lead-body {
+    display: grid;
+    grid-template-columns: minmax(300px, 4fr) 7fr;
+    gap: 72px;
+    margin-top: 84px;
+    align-items: end;
+  }
+  .lede { font-size: 21px; line-height: 1.55; color: var(--ink); max-width: 34em; }
+  .lede p + p { margin-top: 1.1em; }
+  .lede .kicker { color: var(--seal); font-weight: 500; margin-bottom: 18px; display: block; }
+  .figure { position: relative; }
+  .figure img {
+    display: block; width: 100%; height: auto;
+    mix-blend-mode: multiply;
+    filter: contrast(1.04);
+  }
+  .figcap {
+    display: flex; gap: 1.6em; align-items: baseline;
+    border-top: 1px solid var(--rule);
+    margin-top: 18px; padding-top: 10px;
+    color: var(--ink-soft);
+  }
+  .figcap .fig-no { color: var(--seal); }
+
+  /* ---------- marquee ---------- */
+  .ticker {
+    margin-top: 92px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-block;
+    padding: 12px 0;
+    animation: ticker 70s linear infinite;
+  }
+  .ticker-track span { margin-right: 3.2em; color: var(--ink-soft); }
+  .ticker-track b { font-weight: 400; color: var(--seal); margin-right: 3.2em; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+  }
+
+  /* ---------- departments ---------- */
+  .dept-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 3px double var(--rule);
+  }
+  .dept-head .no { color: var(--seal); }
+
+  /* ---------- inquiries ---------- */
+  .inquiries { padding-top: 128px; }
+  .inquiry-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 64px;
+  }
+  .inquiry {
+    padding: 0 44px;
+    border-left: 1px solid var(--hairline);
+  }
+  .inquiry:first-child { padding-left: 0; border-left: none; }
+  .inquiry:last-child { padding-right: 0; }
+  .inquiry .numeral {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 330;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--seal);
+  }
+  .inquiry h3 {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 60;
+    font-weight: 420;
+    font-size: 31px;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+    margin: 26px 0 20px;
+  }
+  .inquiry p { font-size: 17.5px; line-height: 1.62; color: var(--ink-soft); }
+  .inquiry .tag { margin-top: 26px; color: var(--ink-soft); display: block; letter-spacing: 0.16em; }
+
+  /* ---------- interlude ---------- */
+  .interlude { position: relative; margin-top: 104px; }
+  .interlude .art {
+    margin-left: auto;
+    width: 62%;
+    position: relative;
+  }
+  .interlude .art img {
+    display: block; width: 100%; height: auto;
+    mix-blend-mode: multiply;
+    filter: contrast(1.04);
+  }
+  .interlude blockquote {
+    position: absolute;
+    left: 0; bottom: 12%;
+    z-index: 2;
+    max-width: 15em;
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 330;
+    font-style: italic;
+    font-size: clamp(40px, 3.8vw, 54px);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+  .interlude blockquote .mark { color: var(--seal); font-style: normal; }
+  .interlude .figcap { width: 62%; margin-left: auto; }
+
+  /* ---------- instruments ---------- */
+  .instruments { padding-top: 148px; }
+  .plates {
+    display: grid;
+    grid-template-columns: 7fr 2fr 2fr;
+    gap: 28px;
+    margin-top: 64px;
+    align-items: stretch;
+  }
+  .plate {
+    border: 1px solid var(--rule);
+    outline: 1px solid var(--hairline);
+    outline-offset: 5px;
+    padding: 44px 48px 36px;
+    display: flex; flex-direction: column;
+    min-height: 460px;
+  }
+  .plate .plate-no { color: var(--seal); }
+  .plate-primary { transition: background 200ms ease, color 200ms ease; }
+  .plate-primary:hover { background: var(--ink); color: var(--paper); }
+  .plate-primary:hover .plate-no,
+  .plate-primary:hover .go { color: var(--paper); }
+  .plate-primary h3 {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 340;
+    font-size: clamp(64px, 6vw, 96px);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: auto 0;
+    padding: 36px 0;
+  }
+  .plate-primary p {
+    font-size: 19px; line-height: 1.55;
+    max-width: 30em;
+  }
+  .plate-primary .go {
+    margin-top: 34px;
+    color: var(--seal);
+    display: inline-block;
+  }
+  .plate-empty {
+    color: var(--ink-soft);
+    justify-content: space-between;
+    border-style: dashed;
+    border-color: var(--hairline);
+  }
+  .plate-empty .center {
+    margin: auto 0;
+    text-align: center;
+    letter-spacing: 0.22em;
+  }
+  .plates-note {
+    margin-top: 30px;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+
+  /* ---------- correspondence ---------- */
+  .correspondence { padding-top: 148px; }
+  .corr-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 80px;
+    margin-top: 56px;
+    align-items: center;
+  }
+  .corr-grid .art img {
+    display: block; width: 100%; max-width: 460px; height: auto;
+    mix-blend-mode: multiply;
+    filter: grayscale(1) brightness(1.16) contrast(1.22);
+  }
+  .corr-copy h3 {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "opsz" 100;
+    font-weight: 350;
+    font-size: 46px;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    max-width: 13em;
+  }
+  .corr-copy > p { font-size: 19px; color: var(--ink-soft); margin-top: 26px; max-width: 32em; }
+  .leaders { margin-top: 44px; list-style: none; }
+  .leaders li {
+    display: flex; align-items: baseline; gap: 1.2em;
+    padding: 12px 0;
+  }
+  .leaders .n { color: var(--seal); }
+  .leaders .dots {
+    flex: 1;
+    border-bottom: 2px dotted var(--hairline);
+    transform: translateY(-4px);
+  }
+  .write-line {
+    margin-top: 44px;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+  }
+  .write-line a { border-bottom: 1px solid var(--rule); padding-bottom: 2px; transition: color 120ms ease, border-color 120ms ease; }
+  .write-line a:hover { color: var(--seal); border-color: var(--seal); }
+
+  /* ---------- colophon ---------- */
+  .colophon { margin-top: 150px; border-top: 1px solid var(--rule); position: relative; }
+  .colophon::after {
+    content: "";
+    display: block;
+    border-top: 3px solid var(--rule);
+    margin-top: 4px;
+  }
+  .colophon .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 0 34px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 980px) {
+    .sheet { padding: 0 24px; }
+    .lead-body, .corr-grid { grid-template-columns: 1fr; gap: 40px; }
+    .inquiry-cols { grid-template-columns: 1fr; gap: 48px; }
+    .inquiry { padding: 0; border-left: none; }
+    .plates { grid-template-columns: 1fr; }
+    .plate-empty { min-height: 160px; }
+    .interlude .art, .interlude .figcap { width: 100%; }
+    .interlude blockquote { position: static; margin-bottom: 24px; }
+    .running-head .row span:nth-child(2) { display: none; }
+    .colophon .row { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="running-head">
+  <div class="sheet">
+    <div class="row mono">
+      <span>Long Horizon Research</span>
+      <span>Human–agent interaction</span>
+      <span>San Francisco</span>
+    </div>
+  </div>
+</header>
+
+<section class="masthead sheet">
+  <img class="crest" src="assets/engraving-sextant.png" alt="" width="2000" height="1091">
+  <h1>Long Horizon Research</h1>
+  <p class="dek">A laboratory studying how people and machine agents think on the same page.</p>
+  <div class="dateline mono">
+    <span class="seal">No. 1</span>
+    <span>The record of the laboratory</span>
+    <span>MMXXVI</span>
+  </div>
+  <div class="end-rule"></div>
+</section>
+
+<main>
+  <section class="lead sheet">
+    <h2>The agents have arrived. <em>The instruments have not.</em></h2>
+    <div class="lead-body">
+      <div class="lede">
+        <span class="kicker mono">The premise</span>
+        <p>Machines now produce most of the first draft. What does not yet exist is the equipment a person needs to direct them — to think, decide, and review at the speed the work now moves.</p>
+        <p>Long Horizon Research is a small laboratory in San Francisco. We build that equipment, and we study what happens when people use it.</p>
+      </div>
+      <figure class="figure">
+        <img src="assets/statue-conversation.png" alt="Halftone photograph of a classical marble sculpture: two robed figures in close conversation." width="2816" height="1536">
+        <figcaption class="figcap mono">
+          <span class="fig-no">Fig. 1</span>
+          <span>Deliberation, mid-draft — one proposes, one decides.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track mono">
+        <span>Every edit attributed</span><b>✳</b>
+        <span>Every change reviewable</span><b>✳</b>
+        <span>Every reversal a trace of judgment</span><b>✳</b>
+        <span>Every artifact shared</span><b>✳</b>
+        <span>Every edit attributed</span><b>✳</b>
+        <span>Every change reviewable</span><b>✳</b>
+        <span>Every reversal a trace of judgment</span><b>✳</b>
+        <span>Every artifact shared</span><b>✳</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="inquiries sheet">
+    <div class="dept-head mono">
+      <span>Department <span class="no">A</span> — The inquiries</span>
+      <span>Three open questions</span>
+    </div>
+    <div class="inquiry-cols">
+      <article class="inquiry">
+        <div class="numeral">I</div>
+        <h3>The surface</h3>
+        <p>When machines draft, the scarce act is deciding. What is the best possible surface for a person to think, judge, and review the work of many hands — some of them not human? We treat the page itself as an unsolved instrument.</p>
+        <span class="tag mono">Interfaces</span>
+      </article>
+      <article class="inquiry">
+        <div class="numeral">II</div>
+        <h3>Judgment, recorded</h3>
+        <p>Every edit, comment, acceptance, and reversal is a trace of one person's judgment. We study how a model learns that judgment from the collaboration itself — personalization, and reinforcement learning on real work.</p>
+        <span class="tag mono">Personalization · RL</span>
+      </article>
+      <article class="inquiry">
+        <div class="numeral">III</div>
+        <h3>The crowded artifact</h3>
+        <p>Many people and many agents now share one artifact. Who wrote what; who approves; who holds control when the work moves at machine speed. Attribution and review are instrument problems, and we build for them.</p>
+        <span class="tag mono">Attribution · Control</span>
+      </article>
+    </div>
+
+    <div class="interlude">
+      <blockquote><span class="mark">“</span>The bottleneck is no longer the drafting. It is the deciding.<span class="mark">”</span></blockquote>
+      <div class="art">
+        <img src="assets/statue-thinker.png" alt="Halftone photograph of a classical marble bust of a philosopher in profile, hand at chin." width="2816" height="1536">
+      </div>
+      <figcaption class="figcap mono">
+        <span class="fig-no">Fig. 2</span>
+        <span>The reviewer — the one act that does not delegate.</span>
+      </figcaption>
+    </div>
+  </section>
+
+  <section class="instruments sheet">
+    <div class="dept-head mono">
+      <span>Department <span class="no">B</span> — The instruments</span>
+      <span>A series, begun</span>
+    </div>
+    <div class="plates">
+      <a class="plate plate-primary" href="https://sundialhub.com">
+        <span class="mono"><span class="plate-no">Plate I</span> · Shipped · sundialhub.com</span>
+        <h3>Sundial</h3>
+        <p>A shared workspace where people and agents write together. Every edit carries its author's name; every change can be reviewed, kept, or reversed. The first instrument of the series, in daily use.</p>
+        <span class="go mono">Enter the workspace →</span>
+      </a>
+      <div class="plate plate-empty">
+        <span class="mono"><span class="plate-no">Plate II</span></span>
+        <span class="center mono">In preparation</span>
+        <span class="mono">—</span>
+      </div>
+      <div class="plate plate-empty">
+        <span class="mono"><span class="plate-no">Plate III</span></span>
+        <span class="center mono">Reserved</span>
+        <span class="mono">—</span>
+      </div>
+    </div>
+    <p class="plates-note">Each instrument is also an experiment; findings are prepared for publication as the record accumulates.</p>
+  </section>
+
+  <section class="correspondence sheet">
+    <div class="dept-head mono">
+      <span>Department <span class="no">C</span> — Correspondence</span>
+      <span>The laboratory is hiring</span>
+    </div>
+    <div class="corr-grid">
+      <div class="art">
+        <img src="assets/engraving-hand.png" alt="Copperplate engraving of a hand writing with a quill pen." width="2000" height="1091">
+      </div>
+      <div class="corr-copy">
+        <h3>We are looking for people who cannot leave these questions alone.</h3>
+        <p>Researchers and engineers join a small group working on all three inquiries at once — the surface, the learning, the shared artifact.</p>
+        <ul class="leaders mono">
+          <li><span class="n">01</span><span>Research</span><span class="dots"></span><span>Personalization</span></li>
+          <li><span class="n">02</span><span>Research</span><span class="dots"></span><span>Reinforcement learning</span></li>
+          <li><span class="n">03</span><span>Engineering</span><span class="dots"></span><span>Interfaces</span></li>
+        </ul>
+        <p class="write-line mono">Write to <a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="colophon">
+  <div class="sheet">
+    <div class="row mono">
+      <span>Long Horizon Research · San Francisco</span>
+      <span>Set in Fraunces, Newsreader &amp; IBM Plex Mono</span>
+      <span><a class="u-link" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
