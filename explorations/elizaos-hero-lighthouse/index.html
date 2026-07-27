@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Horizon Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000000;
+  --orange:#FF5800;
+  --blue:#1A3CF0;
+  --bone:#D6D3CA;
+  --white:#FFFFFF;
+  --grey:#666666;
+  --pad:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Inter Tight','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{padding:0 var(--pad)}
+
+/* ---------- nav ---------- */
+header{
+  position:absolute;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px var(--pad);
+}
+.mark{
+  display:flex;align-items:baseline;gap:6px;
+  font-weight:800;font-size:24px;letter-spacing:-.03em;color:var(--black);
+  line-height:1;
+}
+.mark .px{font-family:'Silkscreen',monospace;font-weight:700;font-size:17px;letter-spacing:0}
+.mark .short{display:none}
+nav{display:flex;gap:38px}
+nav a{
+  font-size:18px;font-weight:600;text-transform:uppercase;color:var(--black);
+  letter-spacing:-.005em;transition:opacity .18s ease;
+}
+nav a:hover{opacity:.5}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-block;border:1px solid transparent;border-radius:2px;
+  padding:14px 26px;font-size:22px;font-weight:300;line-height:1.1;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;cursor:pointer;
+}
+.btn-solid{background:var(--black);color:var(--white)}
+.btn-solid:hover{background:#242424}
+.btn-ghost{border-color:currentColor;background:transparent;font-size:19px;padding:12px 22px}
+.btn-ghost:hover{background:var(--white);color:var(--black)}
+.btn-onorange{background:var(--black);color:var(--orange);font-size:28px;padding:16px 30px}
+.btn-onorange:hover{background:#1c1c1c}
+.btn-dark-ghost{border-color:var(--black);color:var(--black)}
+.btn-dark-ghost:hover{background:var(--black);color:var(--white)}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;min-height:100vh;display:flex;align-items:center;
+  background:#A9C6E2 url('img/hero.jpg') center bottom / cover no-repeat;
+  padding:120px var(--pad) 150px;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.18) 34%,rgba(255,255,255,0) 62%);
+}
+.hero > div{position:relative;z-index:1}
+.hero h1{
+  font-size:clamp(44px,6.2vw,90px);font-weight:700;letter-spacing:-.038em;
+  line-height:.96;color:var(--black);
+}
+.hero p{
+  margin-top:26px;font-size:clamp(20px,1.9vw,27px);font-weight:300;
+  line-height:1.18;color:var(--black);max-width:22ch;letter-spacing:-.015em;
+}
+.hero .btn{margin-top:34px}
+
+/* ---------- colour strip ---------- */
+.strip{display:flex;height:27px;width:100%;font-family:'Silkscreen',monospace;font-size:10px}
+.strip span{display:block;height:100%}
+.strip .lbl{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:0 14px;letter-spacing:.06em;white-space:nowrap;
+}
+.strip .arrow{flex:1;height:1px;min-width:44px;background:currentColor;position:relative}
+.strip .arrow.l::before,.strip .arrow.r::after{
+  content:'';position:absolute;top:-3px;width:7px;height:7px;border:1px solid currentColor;
+}
+.strip .arrow.l::before{left:0;border-right:0;border-top:0;transform:rotate(45deg)}
+.strip .arrow.r::after{right:0;border-left:0;border-bottom:0;transform:rotate(45deg)}
+
+/* ---------- welcome (black) ---------- */
+.welcome{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  padding:96px var(--pad) 104px;align-items:start;
+}
+.welcome h2{
+  font-size:clamp(40px,5.7vw,82px);font-weight:300;letter-spacing:-.035em;line-height:1.0;
+}
+.welcome p{
+  margin-top:30px;font-size:clamp(21px,2.4vw,34px);font-weight:300;
+  line-height:1.14;letter-spacing:-.02em;max-width:24ch;
+}
+.welcome .btn{margin-top:36px}
+.vscroll{height:520px;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent)}
+.vtrack{animation:vroll 34s linear infinite}
+.vtrack li{
+  list-style:none;font-size:clamp(30px,3.6vw,51px);font-weight:300;color:var(--grey);
+  letter-spacing:-.03em;line-height:1;padding:16px 0;white-space:nowrap;
+}
+@keyframes vroll{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+
+/* ---------- research (orange) ---------- */
+.research{background:var(--orange);color:var(--black);padding:88px var(--pad) 104px}
+.eyebrow{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.research h2{
+  margin-top:42px;font-size:clamp(38px,4.6vw,66px);font-weight:300;
+  letter-spacing:-.035em;line-height:1.02;max-width:18ch;
+}
+.research .btn{margin-top:40px}
+.cards{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px 96px;margin-top:96px;
+}
+.card svg{width:44px;height:44px;display:block}
+.card h3{margin-top:26px;font-size:28px;font-weight:600;letter-spacing:-.02em}
+.card p{margin-top:10px;font-size:28px;font-weight:300;line-height:1.17;letter-spacing:-.02em}
+
+/* ---------- marquee ---------- */
+.marquee{overflow:hidden;white-space:nowrap;display:flex}
+.marquee.on-orange{background:var(--orange);color:var(--black);padding:14px 0}
+.mtrack{display:flex;flex:0 0 auto;animation:mroll 34s linear infinite}
+.mtrack .unit{display:flex;align-items:center;gap:26px;padding-right:26px}
+.mtrack .mono{font-family:'Silkscreen',monospace;font-size:18px;letter-spacing:.02em}
+.mtrack .word{font-weight:800;font-size:26px;letter-spacing:-.03em;display:flex;align-items:baseline;gap:5px}
+.mtrack .word .px{font-family:'Silkscreen',monospace;font-weight:700;font-size:18px;letter-spacing:0}
+@keyframes mroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* ---------- instruments (black) ---------- */
+.instruments{padding:88px 0 96px}
+.instruments .eyebrow{color:var(--white);padding:0 var(--pad)}
+.inst-body{
+  display:grid;grid-template-columns:0.85fr 1.15fr;gap:70px;align-items:center;
+  padding:78px var(--pad) 0;min-height:360px;
+}
+.inst-art{max-width:400px;width:100%}
+.rotator{position:relative;min-height:210px}
+.rotator p{
+  position:absolute;inset:0;font-size:clamp(26px,3vw,42px);font-weight:300;
+  line-height:1.16;letter-spacing:-.025em;opacity:0;transition:opacity .7s ease;
+}
+.rotator p.on{opacity:1}
+.inst-link{
+  display:inline-flex;align-items:center;gap:10px;margin-top:26px;
+  font-size:22px;font-weight:400;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:3px;
+}
+.inst-link:hover{border-bottom-color:var(--white)}
+.glyphs{margin-top:74px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.glyphs .mtrack{animation-duration:46s}
+.glyphs .unit{gap:0;padding-right:0}
+.glyphs svg{width:76px;height:76px;margin:0 62px;opacity:.85}
+
+/* ---------- roles (blue) ---------- */
+.roles{
+  background:var(--blue);padding:78px var(--pad) 96px;position:relative;overflow:hidden;
+}
+.roles::before,.roles::after{
+  content:'';position:absolute;width:520px;height:340px;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.5) 1.1px,transparent 1.1px);
+  background-size:9px 9px;
+}
+.roles::before{top:0;right:-60px;-webkit-mask-image:linear-gradient(220deg,#000,transparent 70%);mask-image:linear-gradient(220deg,#000,transparent 70%)}
+.roles::after{bottom:0;left:-60px;-webkit-mask-image:linear-gradient(40deg,#000,transparent 70%);mask-image:linear-gradient(40deg,#000,transparent 70%)}
+.roles-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.roles h2{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1.12}
+.roles-tag{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:400}
+.roles-tag svg{width:34px;height:34px}
+.stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:26px 90px;margin-top:78px;
+  position:relative;z-index:1;
+}
+.stat .lab{font-size:21px;font-weight:300;text-transform:uppercase;letter-spacing:.01em}
+.stat .num{
+  font-size:clamp(88px,12vw,170px);font-weight:200;letter-spacing:-.04em;line-height:1;
+  margin-top:-6px;
+}
+.stat .sub{font-size:26px;font-weight:300;letter-spacing:-.02em;margin-top:2px;max-width:26ch;line-height:1.15}
+.stat .mail{
+  font-size:clamp(28px,3.1vw,44px);font-weight:200;letter-spacing:-.03em;line-height:1.05;
+  margin-top:8px;display:inline-block;border-bottom:1px solid rgba(255,255,255,.45);
+}
+.stat .mail:hover{border-bottom-color:var(--white)}
+
+/* ---------- cta band ---------- */
+.cta{
+  min-height:640px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:26px;text-align:center;color:var(--black);
+  background:#A9C6E2 url('img/band.jpg') center / cover no-repeat;
+  padding:120px var(--pad);
+}
+.cta h2{font-size:clamp(44px,7vw,100px);font-weight:300;letter-spacing:-.04em;line-height:1}
+.cta .btn{font-size:clamp(22px,2.4vw,36px);padding:14px 30px}
+
+/* ---------- footer ---------- */
+footer{background:var(--bone);color:var(--black)}
+.wordmark{
+  display:flex;align-items:baseline;justify-content:space-between;gap:2%;
+  padding:60px var(--pad) 26px;line-height:.82;white-space:nowrap;
+  font-size:clamp(38px,11.4vw,166px);
+}
+.wordmark .big{font-size:1em;font-weight:800;letter-spacing:-.055em}
+.wordmark .px{font-family:'Silkscreen',monospace;font-weight:700;font-size:.315em;letter-spacing:-.02em}
+.fcols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;padding:44px var(--pad) 70px}
+.fcols h4{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.05;text-transform:uppercase}
+.fcols ul{list-style:none;display:flex;flex-direction:column;gap:18px}
+.fcols li a{font-size:20px;font-weight:600;text-transform:uppercase}
+.fcols li a:hover{opacity:.55}
+.flinks li a{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:400;text-transform:none}
+.flinks svg{width:24px;height:24px}
+.checker{
+  height:26px;
+  background-image:
+    linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%),
+    linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%);
+  background-size:14px 14px;background-position:0 0,7px 7px;
+}
+.legal{padding:20px var(--pad) 26px;font-size:14px;font-weight:400;opacity:.6}
+
+@media (max-width:900px){
+  :root{--pad:22px}
+  .hero{background-position:80% bottom}
+  header{padding:18px var(--pad)}
+  nav{gap:12px}
+  nav a{font-size:11px;letter-spacing:-.01em}
+  .mark{font-size:17px;gap:4px}
+  .mark .px{font-size:12px}
+  .mark .full{display:none}
+  .mark .short{display:inline}
+  .welcome,.cards,.stats,.inst-body,.fcols{grid-template-columns:1fr}
+  .inst-art{max-width:260px}
+  .vscroll{height:300px}
+  .card p,.eyebrow{font-size:22px}
+  .card h3{font-size:22px}
+  .fcols{gap:36px}
+}
+@media (prefers-reduced-motion:reduce){
+  .vtrack,.mtrack{animation:none}
+  .rotator p{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="mark" href="#top"><span class="full">LONGHORIZON</span><span class="short">LHR</span><span class="px">[R]</span></a>
+  <nav>
+    <a href="#research">Research</a>
+    <a href="#instruments">Instruments</a>
+    <a href="#hiring">Hiring</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div>
+    <h1>The agents are here.<br>The instruments are not.</h1>
+    <p>A research lab in San Francisco studying how people and agents work on the same page.</p>
+    <a class="btn btn-solid" href="#instruments">See Sundial</a>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <span style="background:#FF5800;width:3%"></span>
+  <span style="background:#FFFFFF;width:12%"></span>
+  <span style="background:#BFBFBF;width:12%"></span>
+  <span style="background:#1A1A1A;width:12%"></span>
+  <span class="lbl" style="background:#1A3CF0;color:#fff;flex:1"><i class="arrow l"></i>THINK</span>
+  <span class="lbl" style="background:#FF5800;color:#fff;flex:1">REVIEW<i class="arrow r"></i></span>
+  <span style="background:#111;width:9%"></span>
+  <span style="background:#D6D3CA;width:10%"></span>
+  <span style="background:#FFFFFF;width:8%"></span>
+  <span style="background:#1A3CF0;width:3%"></span>
+</div>
+
+<section class="welcome">
+  <div>
+    <h2>Welcome to Long Horizon Research.</h2>
+    <p>Machines already do most of the drafting. What is missing is the instrument: the surface where a person still thinks, decides and reviews at the speed the drafting now happens.</p>
+    <a class="btn btn-ghost" href="#research">Read the questions</a>
+  </div>
+  <div class="vscroll" aria-hidden="true">
+    <ul class="vtrack">
+      <li>Every edit</li><li>Every comment</li><li>Every acceptance</li><li>Every reversal</li>
+      <li>Attribution</li><li>Provenance</li><li>Review</li><li>Judgment</li>
+      <li>Personalization</li><li>RL on real work</li><li>Many people</li><li>Many agents</li>
+      <li>One document</li><li>Taste</li><li>Long horizons</li>
+      <li>Every edit</li><li>Every comment</li><li>Every acceptance</li><li>Every reversal</li>
+      <li>Attribution</li><li>Provenance</li><li>Review</li><li>Judgment</li>
+      <li>Personalization</li><li>RL on real work</li><li>Many people</li><li>Many agents</li>
+      <li>One document</li><li>Taste</li><li>Long horizons</li>
+    </ul>
+  </div>
+</section>
+
+<section class="research" id="research">
+  <p class="eyebrow">Research</p>
+  <h2>Three questions, one long horizon.</h2>
+  <a class="btn btn-onorange" href="#hiring">Work with us</a>
+
+  <div class="cards">
+    <article class="card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square">
+        <rect x="2.5" y="3.5" width="19" height="14"/><path d="M2.5 8.5h19M8 17.5v3M16 17.5v3M6 20.5h12"/>
+      </svg>
+      <h3>The Instrument</h3>
+      <p>What is the best surface for a person to think, decide and review when machines do most of the drafting? The document stops being a place to type and becomes a place to judge.</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square">
+        <circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="9"/>
+        <path d="M12 3v3.2M12 17.8V21M3 12h3.2M17.8 12H21"/>
+      </svg>
+      <h3>Judgment, Learned</h3>
+      <p>Can a model learn a person's judgment from the collaboration itself? Every edit, comment, acceptance and reversal is a trace of judgment. We treat that trace as signal: personalization, and reinforcement learning on real work.</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square">
+        <circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18.5" r="2.4"/>
+        <path d="M5 8.4v3.1h14V8.4M12 11.5v4.6"/>
+      </svg>
+      <h3>Many Hands</h3>
+      <p>How do several people and several agents share one document without losing track of who did what? Attribution and review have to hold once the number of authors stops being one.</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square">
+        <path d="M3 20.5L20.5 3M3 20.5v-5M3 20.5h5"/><rect x="12.5" y="3" width="8" height="8"/>
+        <path d="M8.5 15.5l4-4"/>
+      </svg>
+      <h3>Instruments, Not Demos</h3>
+      <p>We answer a question by building the thing and putting it in real hands. Every instrument ships, gets used on real work, and reports back to the research.</p>
+    </article>
+  </div>
+</section>
+
+<div class="marquee on-orange" aria-hidden="true">
+  <div class="mtrack">
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+  </div>
+  <div class="mtrack">
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+  </div>
+</div>
+
+<section class="instruments" id="instruments">
+  <p class="eyebrow">First instrument</p>
+  <div class="inst-body">
+    <img class="inst-art" src="img/instrument.svg" alt="Line drawing of a sundial: a dial face, hour marks and a gnomon casting a wedge of light">
+    <div>
+      <div class="rotator">
+        <p class="on">Sundial is a shared workspace where people and agents write together.</p>
+        <p>Every edit is attributed. Every change is reviewable. Nothing lands unseen.</p>
+        <p>It is the first of a series. Each one holds to the same rule: the person stays in the driver seat.</p>
+      </div>
+      <a class="inst-link" href="https://sundialhub.com" target="_blank" rel="noopener">sundialhub.com <span aria-hidden="true">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="glyphs" aria-hidden="true">
+    <div class="mtrack">
+      <div class="unit">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="24" cy="24" r="17"/><path d="M24 24V9M24 24l11 8"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M13 7h22M13 41h22M14 7c0 11 10 13 10 17 0-4 10-6 10-17M14 41c0-11 10-13 10-17 0 4 10 6 10 17"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M24 12L13 40M24 12l11 28M17 30h14"/><circle cx="24" cy="9" r="3.4"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><rect x="8" y="14" width="32" height="20"/><path d="M14 14v6M20 14v10M26 14v6M32 14v10"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M24 8L8 40h32z"/><path d="M24 8v32"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="24" cy="24" r="10"/><path d="M24 4v8M24 36v8M4 24h8M36 24h8M10 10l6 6M32 32l6 6M38 10l-6 6M16 32l-6 6"/></svg>
+      </div>
+      <div class="unit">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="24" cy="24" r="17"/><path d="M24 24V9M24 24l11 8"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M13 7h22M13 41h22M14 7c0 11 10 13 10 17 0-4 10-6 10-17M14 41c0-11 10-13 10-17 0 4 10 6 10 17"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M24 12L13 40M24 12l11 28M17 30h14"/><circle cx="24" cy="9" r="3.4"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><rect x="8" y="14" width="32" height="20"/><path d="M14 14v6M20 14v10M26 14v6M32 14v10"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><path d="M24 8L8 40h32z"/><path d="M24 8v32"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="24" cy="24" r="10"/><path d="M24 4v8M24 36v8M4 24h8M36 24h8M10 10l6 6M32 32l6 6M38 10l-6 6M16 32l-6 6"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roles" id="hiring">
+  <div class="roles-top">
+    <h2>By researchers,<br>for the people doing the work</h2>
+    <div class="roles-tag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2.5" y="7" width="19" height="13"/><path d="M8.5 7V4h7v3"/></svg>
+      <span>Open roles</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <p class="lab">Researcher</p>
+      <p class="num">01</p>
+      <p class="sub">Personalization. Learning one person's judgment from the work they already do.</p>
+    </div>
+    <div class="stat">
+      <p class="lab">Researcher</p>
+      <p class="num">02</p>
+      <p class="sub">Reinforcement learning on real tasks, with real acceptance and reversal as reward.</p>
+    </div>
+    <div class="stat">
+      <p class="lab">Engineer</p>
+      <p class="num">03</p>
+      <p class="sub">Interfaces. The editing surface itself, down to the last millisecond of latency.</p>
+    </div>
+    <div class="stat">
+      <p class="lab">Apply</p>
+      <a class="mail" href="mailto:team@longhorizonresearch.com">team@longhorizon<br>research.com</a>
+      <p class="sub" style="margin-top:16px">San Francisco. Send us something you made.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <h2>Build the Instruments</h2>
+  <a class="btn btn-ghost btn-dark-ghost" href="mailto:team@longhorizonresearch.com">Contact Us</a>
+</section>
+
+<footer>
+  <div class="wordmark">
+    <span class="big">LONGHORIZON</span><span class="px">[LHR]</span>
+  </div>
+  <div class="fcols">
+    <div><h4>Long<br>Horizon</h4></div>
+    <ul>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#instruments">Instruments</a></li>
+      <li><a href="#hiring">Hiring</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <ul class="flinks">
+      <li><a href="https://sundialhub.com" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 12V6M12 12l5 3.5"/></svg>Sundial</a></li>
+      <li><a href="mailto:team@longhorizonresearch.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14"/><path d="M3 6l9 7 9-7"/></svg>Email</a></li>
+      <li><a href="#hiring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>San Francisco</a></li>
+    </ul>
+  </div>
+  <div class="checker" aria-hidden="true"></div>
+  <p class="legal">Long Horizon Research. San Francisco, California.</p>
+</footer>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.rotator p');
+  if (slides.length < 2) return;
+  var i = 0;
+  setInterval(function(){
+    slides[i].classList.remove('on');
+    i = (i + 1) % slides.length;
+    slides[i].classList.add('on');
+  }, 4200);
+})();
+</script>
+</body>
+</html>

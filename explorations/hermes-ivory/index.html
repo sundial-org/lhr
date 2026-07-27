@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Long Horizon Research · The agents are here. The instruments are not.</title>
+<meta name="description" content="A research lab in San Francisco studying human-agent interaction. First instrument: Sundial." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ═════════════════════════════  INK & PAPER  ═════════════════════════════ */
+:root{
+  --paper:#efe8d9;          /* the sheet */
+  --paper-2:#e3d9c4;        /* toned stock, specimen band */
+  --tissue:#f7f2e7;         /* tissue guard */
+  --ink:#0e2c42;            /* one ink: Prussian */
+  --ink-70:rgba(14,44,66,.70);
+  --ink-45:rgba(14,44,66,.45);
+  --ink-24:rgba(14,44,66,.24);
+  --ink-13:rgba(14,44,66,.13);
+  --gutter:104px;
+  --disp:"Fraunces","Iowan Old Style",Georgia,serif;
+  --mono:"Roboto Mono",ui-monospace,Menlo,monospace;
+}
+@media (max-width:1160px){:root{--gutter:56px}}
+@media (max-width:720px){:root{--gutter:24px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--disp);font-variation-settings:"opsz" 14,"SOFT" 20,"WONK" 0;
+  font-size:16px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* paper fibre: a laid tooth over the whole sheet, never a vignette */
+.fibre{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.5;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.62 .9' numOctaves='4' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .30 0 0 0 0 .21 0 0 0 .30 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23f)'/%3E%3C/svg%3E")}
+
+/* ═════════════════════════════  APPARATUS  ═════════════════════════════ */
+.mono{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;font-weight:500;line-height:1.6}
+.mono-lc{font-family:var(--mono);font-size:11px;letter-spacing:.02em;
+  text-transform:none;color:var(--ink-70);line-height:1.6}
+.disp{font-family:var(--disp);font-weight:600;letter-spacing:-.02em;line-height:.98;
+  font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 1;margin:0}
+p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:46ch;
+  font-variation-settings:"opsz" 14,"SOFT" 25,"WONK" 0}
+
+.wrap{padding:0 var(--gutter)}
+
+/* the section head: a running head with a rule, then a folio */
+.shead{display:flex;align-items:baseline;gap:20px;padding-bottom:16px}
+.shead .r{flex:1;height:1px;background:var(--ink-24);transform:translateY(-3px)}
+.shead .fol{color:var(--ink-45)}
+
+/* buttons print as a solid block of ink and hollow out on hover */
+.btn{display:inline-flex;align-items:center;gap:11px;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:500;padding:13px 20px;line-height:1;border:1px solid var(--ink);
+  transition:background .3s cubic-bezier(.2,.7,.2,1),color .3s}
+.btn:hover{background:transparent;color:var(--ink)}
+.btn svg{width:12px;height:12px;flex:none;fill:currentColor}
+.btn--rev{background:var(--tissue);color:var(--ink);border-color:var(--tissue)}
+.btn--rev:hover{background:transparent;color:var(--tissue)}
+
+/* ═════════════════════════════  PLATE MARK  ═════════════════════════════ */
+/* every engraving sits inside the debossed rectangle the copper plate leaves */
+.plate{position:relative;padding:22px;background:transparent}
+.plate::before{content:"";position:absolute;inset:9px;border:1px solid var(--ink-24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 0 rgba(255,255,255,.6);
+  pointer-events:none;z-index:2}
+.plate img{width:100%;height:100%;object-fit:cover}
+.pcap{display:flex;justify-content:space-between;gap:16px;margin-top:9px;
+  color:var(--ink-45);font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase}
+
+/* tissue guard: the leaf of onion skin bound in front of a plate */
+/* the leaf rests half-drawn across the plate; hovering slides it clear */
+.guard{position:absolute;left:9px;right:9px;bottom:9px;height:42%;z-index:3;
+  background:linear-gradient(rgba(247,242,231,.30),rgba(247,242,231,.52));
+  -webkit-backdrop-filter:blur(1.3px);backdrop-filter:blur(1.3px);
+  border-top:1px solid rgba(14,44,66,.32);
+  box-shadow:0 -5px 11px rgba(14,44,66,.10);
+  transform-origin:bottom;
+  transition:transform .8s cubic-bezier(.22,.75,.2,1),opacity .8s}
+.has-guard:hover .guard{transform:translateY(101%);opacity:0}
+
+/* ═════════════════════════════  MASTHEAD  ═════════════════════════════ */
+.mast{position:relative;z-index:40;padding:34px var(--gutter) 0}
+.mast-row{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;
+  padding-bottom:13px}
+.mark{display:flex;align-items:center;gap:13px}
+.mark svg{width:19px;height:24px;fill:var(--ink);flex:none}
+.mark b{font-family:var(--disp);font-weight:600;font-size:14.5px;letter-spacing:.19em;
+  text-transform:uppercase;font-variation-settings:"opsz" 40,"SOFT" 0,"WONK" 0;line-height:1}
+.mast nav{display:flex;gap:34px}
+.mast nav a{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;font-weight:500;position:relative;padding-bottom:3px}
+.mast nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;
+  background:var(--ink);transition:right .4s cubic-bezier(.2,.7,.2,1)}
+.mast nav a:hover::after{right:0}
+.rules{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink-24);height:4px}
+.runhead{display:flex;justify-content:space-between;padding-top:10px;color:var(--ink-45)}
+
+/* crop marks at the corners of the sheet */
+.crop{position:absolute;width:19px;height:19px;pointer-events:none;z-index:5}
+.crop::before,.crop::after{content:"";position:absolute;background:var(--ink-24)}
+.crop::before{left:0;top:8px;width:19px;height:1px}
+.crop::after{top:0;left:8px;width:1px;height:19px}
+.crop.tl{top:14px;left:14px}.crop.tr{top:14px;right:14px}
+.crop.bl{bottom:14px;left:14px}.crop.br{bottom:14px;right:14px}
+
+/* running side-title, the way a plate book prints its section on the fore-edge */
+.sidefol{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:60;
+  writing-mode:vertical-rl;font-family:var(--mono);font-size:9.5px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--ink-45);opacity:0;transition:opacity .5s;
+  pointer-events:none}
+.sidefol.on{opacity:1}
+@media (max-width:1160px){.sidefol,.crop{display:none}}
+
+/* ═════════════════════════════  HERO / HALF-TITLE  ═════════════════════════════ */
+.hero{padding:74px var(--gutter) 92px;display:grid;
+  grid-template-columns:minmax(0,1fr) 396px;gap:62px;align-items:start}
+.hero h1{font-size:clamp(38px,4.85vw,70px);margin:22px 0 0}
+.hero .lede{margin-top:54px;padding-top:28px;border-top:1px solid var(--ink-13);
+  display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start}
+.hero .lede > div{min-width:0}
+.hero .lbl{display:block;color:var(--ink-45);margin-bottom:13px}
+.hero-plate{position:relative}
+.hero-plate img{animation:breathe 19s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+/* the address slip: a typed line on a bordered card */
+.slip{border:1px solid var(--ink);background:rgba(255,255,255,.34);min-width:340px}
+.slip .tabs{display:flex;gap:20px;padding:9px 13px 7px;border-bottom:1px solid var(--ink-13)}
+.slip .tabs button{background:none;border:none;cursor:pointer;padding:0 0 2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-45);border-bottom:1px solid transparent;transition:color .2s}
+.slip .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.slip .line{display:flex;align-items:center;gap:8px;padding:11px 13px;
+  font-family:var(--mono);font-size:12px;white-space:nowrap;overflow:hidden}
+.slip .dim{color:var(--ink-45)}
+.slip .cur{display:inline-block;width:6px;height:12px;background:var(--ink);
+  animation:blink 1.06s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.slip .cp{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--ink-45);
+  padding:0;display:grid;place-items:center;transition:color .2s}
+.slip .cp:hover{color:var(--ink)}
+.slip .cp svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.4}
+
+/* ═════════════════════════════  TIPPED-IN SPECIMEN  ═════════════════════════════ */
+.specimen{background:var(--paper-2);padding:74px var(--gutter) 66px;position:relative;
+  border-top:1px solid var(--ink-13);border-bottom:1px solid var(--ink-13)}
+.spec-card{max-width:552px;margin:0 auto;background:var(--tissue);
+  border:1px solid var(--ink-24);transform:rotate(-.7deg);
+  box-shadow:0 22px 46px rgba(14,44,66,.15),0 2px 5px rgba(14,44,66,.1)}
+.spec-head{display:flex;justify-content:space-between;padding:14px 22px;
+  border-bottom:1px solid var(--ink);color:var(--ink-70)}
+.spec-title{padding:24px 22px 20px;font-size:27px;font-weight:500;font-style:italic;
+  font-variation-settings:"opsz" 72,"SOFT" 10,"WONK" 1;letter-spacing:-.01em;line-height:1.1;
+  border-bottom:1px solid var(--ink-24)}
+.spec-rows{padding:0 22px 8px}
+.ledrow{display:grid;grid-template-columns:30px 1fr auto;gap:14px;align-items:center;
+  padding:11px 0;border-bottom:1px solid var(--ink-13);font-family:var(--mono);font-size:12px;
+  opacity:0}
+.ledrow:last-child{border-bottom:0}
+.ledrow.on{animation:rowin .55s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rowin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.ledrow .k{color:var(--ink-45);font-size:10.5px;letter-spacing:.1em}
+.ledrow .who{color:var(--ink-45);font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+.gauge{display:inline-block;width:118px;height:9px;border:1px solid var(--ink-24);
+  vertical-align:-1px;padding:1px}
+.gauge i{display:block;height:100%;background:var(--ink);width:0;transition:width 2.3s linear}
+.spec-cap{max-width:552px;margin:22px auto 0;display:flex;justify-content:space-between;
+  color:var(--ink-45);font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase}
+
+/* ═════════════════════════════  INSTRUMENTS  ═════════════════════════════ */
+.instr{padding:96px var(--gutter) 30px}
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;margin-top:34px}
+.item .plate{padding:18px}
+.item .plate figure{margin:0;height:250px;overflow:hidden}
+.item h2{font-family:var(--disp);font-weight:600;font-size:33px;line-height:1.05;margin:16px 0 0;
+  letter-spacing:-.02em;font-variation-settings:"opsz" 96,"SOFT" 0,"WONK" 1}
+.item .sub{display:flex;align-items:baseline;gap:12px;color:var(--ink-45);margin-top:9px}
+.item .act{margin-top:19px}
+.tag{display:inline-block;border:1px solid var(--ink-24);color:var(--ink-45);padding:9px 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;line-height:1}
+
+/* ═════════════════════════════  TISSUE-GUARD BREAK  ═════════════════════════════ */
+.break{position:relative;height:196px;margin-top:70px;display:grid;place-items:center;
+  overflow:hidden}
+.break span{font-family:var(--disp);font-weight:600;font-size:min(15vw,168px);line-height:1;
+  letter-spacing:-.03em;color:rgba(14,44,66,.19);
+  font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 1;user-select:none}
+.break::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(rgba(247,242,231,0) 0%,rgba(247,242,231,.86) 46%,rgba(247,242,231,0) 100%)}
+.break i{position:absolute;left:0;right:0;height:1px;background:var(--ink-13);z-index:2}
+.break i:first-of-type{top:34px}.break i:last-of-type{bottom:34px}
+
+/* ═════════════════════════════  CATALOGUE OF QUESTIONS  ═════════════════════════════ */
+.cat{padding:0 var(--gutter) 110px}
+.entry{display:grid;grid-template-columns:88px 336px minmax(0,1fr);gap:0 56px;
+  padding:46px 0;border-top:1px solid var(--ink-24);align-items:start}
+.entry:last-child{border-bottom:1px solid var(--ink-24)}
+.e-no{font-family:var(--disp);font-weight:500;font-size:46px;line-height:.9;color:var(--ink-24);
+  letter-spacing:-.03em;font-variation-settings:"opsz" 96,"SOFT" 0,"WONK" 1}
+.e-plate .plate{padding:14px}
+.e-plate figure{margin:0;height:238px;overflow:hidden}
+.e-body{padding-top:4px}
+.e-body .hd{display:flex;align-items:baseline;gap:16px;color:var(--ink-45);
+  padding-bottom:14px;margin-bottom:20px;border-bottom:1px solid var(--ink-13)}
+.e-body .hd .r{flex:1;height:1px;background:var(--ink-13)}
+.e-body h3{font-family:var(--disp);font-weight:600;font-size:41px;line-height:1.02;margin:0 0 22px;
+  letter-spacing:-.025em;font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 1;max-width:12ch}
+.toggle{display:flex;align-items:baseline;gap:9px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-45)}
+.toggle button{background:none;border:none;padding:0 0 2px;cursor:pointer;font:inherit;
+  letter-spacing:inherit;text-transform:inherit;color:var(--ink-45);
+  border-bottom:1px solid transparent;transition:color .25s}
+.toggle button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* ═════════════════════════════  INK FLOOD / HIRING  ═════════════════════════════ */
+.flood{position:relative;background:var(--ink);color:var(--tissue);
+  padding:150px var(--gutter) 138px;overflow:hidden}
+.deckle{position:absolute;left:0;width:100%;height:26px;z-index:3;display:block;fill:var(--paper)}
+.deckle.top{top:0}
+.deckle.bot{bottom:0;transform:scaleY(-1)}
+.flood-plate{position:absolute;right:calc(var(--gutter) - 56px);bottom:18px;width:452px;
+  opacity:.52;pointer-events:none;z-index:1;
+  -webkit-mask-image:radial-gradient(80% 84% at 52% 34%,#000 44%,transparent 100%);
+          mask-image:radial-gradient(80% 84% at 52% 34%,#000 44%,transparent 100%)}
+.flood-in{position:relative;z-index:2;max-width:680px}
+.flood .mono{color:rgba(247,242,231,.66)}
+.flood h2{font-size:clamp(40px,5.1vw,74px);margin:20px 0 26px;color:var(--tissue);max-width:9ch}
+.flood p.copy{color:rgba(247,242,231,.84);max-width:44ch;margin-bottom:32px}
+.flood .frule{width:74px;height:1px;background:rgba(247,242,231,.4);margin-bottom:30px}
+
+/* ═════════════════════════════  COLOPHON  ═════════════════════════════ */
+.colophon{padding:86px var(--gutter) 92px;text-align:center;position:relative}
+.device{display:flex;align-items:center;gap:22px;justify-content:center;margin-bottom:30px}
+.device .r{width:min(180px,22vw);height:1px;background:var(--ink-24)}
+.device svg{width:26px;height:32px;fill:var(--ink)}
+.colophon .name{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.2em;
+  text-transform:uppercase;font-variation-settings:"opsz" 40,"SOFT" 0,"WONK" 0}
+.col-meta{display:flex;justify-content:space-between;gap:24px;margin-top:58px;
+  padding-top:16px;border-top:1px solid var(--ink-13);color:var(--ink-45);text-align:left}
+.folio{margin-top:44px;color:var(--ink-45);font-family:var(--mono);font-size:10px;
+  letter-spacing:.3em}
+
+/* ═════════════════════════════  REVEAL  ═════════════════════════════ */
+.rv{opacity:0;transform:translateY(20px);
+  transition:opacity .95s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .hero-plate img{animation:none}
+  *{scroll-behavior:auto}
+}
+
+/* ═════════════════════════════  RESPONSIVE  ═════════════════════════════ */
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr;gap:52px;padding-top:56px}
+  .hero-plate{max-width:420px}
+  .shelf{grid-template-columns:1fr;gap:46px}
+  .entry{grid-template-columns:56px minmax(0,1fr);gap:0 28px}
+  .e-plate{grid-column:2;margin-bottom:26px}
+  .e-body{grid-column:2}
+  .flood-plate{display:none}
+  .guard{display:none}          /* no hover to lift the leaf with */
+  .break{height:140px;margin-top:44px}
+}
+@media (max-width:640px){
+  .mast nav{gap:18px}
+  .mast-row{flex-direction:column;align-items:flex-start;gap:16px}
+  .hero .lede{gap:30px}
+  .slip{min-width:0;width:100%}
+  .col-meta{flex-direction:column;gap:14px}
+  .entry{grid-template-columns:1fr}
+  .e-no{grid-column:1;font-size:34px;margin-bottom:14px}
+  .e-plate,.e-body{grid-column:1}
+}
+</style>
+</head>
+<body>
+<div class="fibre"></div>
+<div class="sidefol" id="sidefol">Long Horizon Research</div>
+
+<!-- ═══════════════════════════  MASTHEAD  ═══════════════════════════ -->
+<div class="mast">
+  <i class="crop tl"></i><i class="crop tr"></i>
+  <div class="mast-row">
+    <a class="mark" href="#top">
+      <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
+      <b>Long Horizon Research</b>
+    </a>
+    <nav>
+      <a href="#research">Research</a>
+      <a href="#instruments">Instruments</a>
+      <a href="#hiring">Join</a>
+      <a href="https://sundialhub.com">Sundial &rarr;</a>
+    </nav>
+  </div>
+  <div class="rules"></div>
+  <div class="runhead mono">
+    <span>San Francisco &middot; 2026</span>
+    <span>Human-Agent Interaction</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════  HALF-TITLE  ═══════════════════════════ -->
+<header class="hero" id="top">
+  <div>
+    <p class="mono rv" style="color:var(--ink-45)">No. 01 &middot; San Francisco</p>
+    <h1 class="disp rv">The agents are here.<br />The instruments are not.</h1>
+
+    <div class="lede rv">
+      <div>
+        <span class="lbl mono">See the first instrument</span>
+        <a class="btn" href="https://sundialhub.com">
+          <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
+          Open Sundial</a>
+      </div>
+      <div>
+        <span class="lbl mono">Or write to the lab</span>
+        <div class="slip">
+          <div class="tabs" role="tablist">
+            <button role="tab" aria-selected="true" data-line="0">research</button>
+            <button role="tab" aria-selected="false" data-line="1">engineering</button>
+          </div>
+          <div class="line">
+            <span class="dim" id="t-pre">mail</span>
+            <span id="t-cmd"></span><span class="cur"></span>
+            <button class="cp" id="copyBtn" aria-label="Copy address">
+              <svg viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 5.5h-11v11"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-plate rv">
+    <div class="plate"><img src="plates/hero.png" alt="Engraving of an observer taking a reading" /></div>
+    <div class="pcap"><span>Plate i</span><span>Frontispiece</span></div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════  TIPPED-IN SPECIMEN  ═══════════════════════════ -->
+<section class="specimen">
+  <div class="spec-card" id="ledger">
+    <div class="spec-head mono"><span>Sundial &middot; shared draft</span><span>Specimen</span></div>
+    <div class="spec-title">one document, four hands</div>
+    <div class="spec-rows">
+      <div class="ledrow"><span class="k">i</span><span>paragraph 4 redrafted</span><span class="who">agent</span></div>
+      <div class="ledrow"><span class="k">ii</span><span>sentence 2 reverted</span><span class="who">author</span></div>
+      <div class="ledrow"><span class="k">iii</span><span>comment resolved</span><span class="who">reviewer</span></div>
+      <div class="ledrow"><span class="k">iv</span><span>reviewing <span class="gauge"><i id="gauge"></i></span></span><span class="who">&nbsp;</span></div>
+      <div class="ledrow"><span class="k">v</span><span>every change attributed</span><span class="who">ledger</span></div>
+    </div>
+  </div>
+  <div class="spec-cap"><span>Plate ii &middot; tipped in</span><span>Sundial</span></div>
+</section>
+
+<!-- ═══════════════════════════  INSTRUMENTS  ═══════════════════════════ -->
+<section class="instr" id="instruments">
+  <div class="shead mono">
+    <span>Instruments</span><i class="r"></i><span class="fol">Folio ii</span>
+  </div>
+
+  <div class="shelf">
+    <article class="item rv">
+      <div class="plate has-guard">
+        <figure><img src="plates/inst-01.png" alt="" /></figure>
+        <span class="guard"></span>
+      </div>
+      <div class="pcap"><span>Plate iii</span><span>Live</span></div>
+      <h2>Sundial</h2>
+      <div class="sub mono"><span>Instrument 01</span></div>
+      <div class="act"><a class="btn" href="https://sundialhub.com">
+        <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
+        Open</a></div>
+    </article>
+
+    <article class="item rv">
+      <div class="plate has-guard">
+        <figure><img src="plates/inst-02.png" alt="" /></figure>
+        <span class="guard"></span>
+      </div>
+      <div class="pcap"><span>Plate iv</span><span>In the lab</span></div>
+      <h2>Unnamed</h2>
+      <div class="sub mono"><span>Instrument 02</span></div>
+      <div class="act"><span class="tag">Being built</span></div>
+    </article>
+
+    <article class="item rv">
+      <div class="plate has-guard">
+        <figure><img src="plates/inst-03.png" alt="" /></figure>
+        <span class="guard"></span>
+      </div>
+      <div class="pcap"><span>Plate v</span><span>Unstarted</span></div>
+      <h2>Empty plinth</h2>
+      <div class="sub mono"><span>Instrument 03</span></div>
+      <div class="act"><span class="tag">First of a series</span></div>
+    </article>
+  </div>
+
+  <div class="break" aria-hidden="true"><i></i><span>Research</span><i></i></div>
+</section>
+
+<!-- ═══════════════════════════  CATALOGUE  ═══════════════════════════ -->
+<section class="cat" id="research">
+  <div class="shead mono">
+    <span>Six questions</span><i class="r"></i>
+    <span class="toggle"><button aria-selected="true">Question</button><span>/</span><button aria-selected="false">Method</button></span>
+  </div>
+
+  <article class="entry rv">
+    <div class="e-no">01</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f1.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate vi</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Surface</span><i class="r"></i></p>
+      <h3>Room To Think</h3>
+      <p class="copy" data-q="What is the best surface for a person to think, decide and review once machines do most of the drafting?" data-m="We build the surface, put real work through it, and watch where a person loses the thread.">What is the best surface for a person to think, decide and review once machines do most of the drafting?</p>
+    </div>
+  </article>
+
+  <article class="entry rv">
+    <div class="e-no">02</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f2.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate vii</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Judgment</span><i class="r"></i></p>
+      <h3>Learned From Work</h3>
+      <p class="copy" data-q="Can a model learn a person's judgment from the collaboration itself, rather than from anything they sit down and write out?" data-m="Personalization and reinforcement learning on real work, not on a bench of invented tasks.">Can a model learn a person's judgment from the collaboration itself, rather than from anything they sit down and write out?</p>
+    </div>
+  </article>
+
+  <article class="entry rv">
+    <div class="e-no">03</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f3.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate viii</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Many Hands</span><i class="r"></i></p>
+      <h3>One Document</h3>
+      <p class="copy" data-q="How do several people and several agents share one document without anyone losing track of who did what?" data-m="One shared state, many authors, every action carrying its author with it.">How do several people and several agents share one document without anyone losing track of who did what?</p>
+    </div>
+  </article>
+
+  <article class="entry rv">
+    <div class="e-no">04</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f4.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate ix</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Trace</span><i class="r"></i></p>
+      <h3>Every Edit Named</h3>
+      <p class="copy" data-q="Every edit, every comment, every acceptance and every reversal is a trace of judgment. We keep all of them." data-m="Attribution is recorded at the edit, so the record is a by-product of working rather than a chore.">Every edit, every comment, every acceptance and every reversal is a trace of judgment. We keep all of them.</p>
+    </div>
+  </article>
+
+  <article class="entry rv">
+    <div class="e-no">05</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f5.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate x</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Review</span><i class="r"></i></p>
+      <h3>Nothing Slips Past</h3>
+      <p class="copy" data-q="If a machine wrote most of it, the reading matters more than the writing. Every change stays reviewable." data-m="Review is the primary act in Sundial, and the interface is measured on how well it supports it.">If a machine wrote most of it, the reading matters more than the writing. Every change stays reviewable.</p>
+    </div>
+  </article>
+
+  <article class="entry rv">
+    <div class="e-no">06</div>
+    <div class="e-plate"><div class="plate"><figure><img src="plates/f6.png" alt="" /></figure></div>
+      <div class="pcap"><span>Plate xi</span></div></div>
+    <div class="e-body">
+      <p class="hd mono"><span>Series</span><i class="r"></i></p>
+      <h3>First Of Many</h3>
+      <p class="copy" data-q="Sundial is the first instrument, not the last. The plinths beside it are waiting." data-m="Each instrument answers one question and teaches us what the next one has to be.">Sundial is the first instrument, not the last. The plinths beside it are waiting.</p>
+    </div>
+  </article>
+</section>
+
+<!-- ═══════════════════════════  INK FLOOD / HIRING  ═══════════════════════════ -->
+<section class="flood" id="hiring">
+  <svg class="deckle top" viewBox="0 0 1200 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0H1200V12L1200,12L1194,18L1190,17L1184,12L1177,16L1173,15L1166,11L1158,15L1149,13L1143,16L1135,17L1126,14L1122,18L1119,15L1113,10L1108,13L1103,13L1098,16L1089,12L1080,15L1075,11L1072,11L1063,11L1059,18L1055,14L1048,18L1041,16L1037,11L1029,17L1022,14L1014,12L1007,12L1001,13L996,15L992,11L983,15L976,17L969,13L966,16L958,18L951,13L945,16L938,17L930,16L925,18L919,18L914,17L907,15L900,15L892,17L886,14L883,18L875,15L871,17L867,16L863,16L855,15L849,13L843,17L835,17L828,17L824,18L816,17L812,18L803,16L797,13L792,18L785,17L778,11L770,10L765,16L759,17L751,11L744,8L741,7L735,16L732,7L724,18L721,17L712,17L705,16L701,12L697,16L692,10L684,16L679,14L672,13L665,18L657,10L651,18L645,12L637,18L630,13L623,7L618,13L613,15L605,11L598,7L589,16L582,13L573,15L568,17L565,16L556,11L551,18L545,17L539,16L534,18L526,16L522,11L516,13L509,16L502,12L496,16L487,17L479,17L475,15L469,18L461,12L455,13L448,18L444,17L441,16L432,9L427,14L420,16L413,17L408,17L403,7L398,18L395,16L386,17L380,17L376,13L370,15L364,8L360,16L352,14L346,17L340,18L334,18L330,16L325,16L318,13L313,17L308,11L304,14L297,17L294,13L286,14L282,17L277,16L272,13L263,15L260,18L253,11L248,14L240,17L232,8L224,16L219,18L215,14L209,11L203,18L194,17L188,18L182,16L175,14L166,7L159,18L153,18L148,15L141,16L136,16L129,18L124,17L116,17L111,17L106,13L100,18L96,12L90,17L83,9L77,13L74,9L69,15L62,11L57,12L51,18L43,14L37,17L28,18L22,18L18,18L12,16L9,16L0,13Z"/></svg>
+  <svg class="deckle bot" viewBox="0 0 1200 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0H1200V12L1200,12L1194,18L1190,17L1184,12L1177,16L1173,15L1166,11L1158,15L1149,13L1143,16L1135,17L1126,14L1122,18L1119,15L1113,10L1108,13L1103,13L1098,16L1089,12L1080,15L1075,11L1072,11L1063,11L1059,18L1055,14L1048,18L1041,16L1037,11L1029,17L1022,14L1014,12L1007,12L1001,13L996,15L992,11L983,15L976,17L969,13L966,16L958,18L951,13L945,16L938,17L930,16L925,18L919,18L914,17L907,15L900,15L892,17L886,14L883,18L875,15L871,17L867,16L863,16L855,15L849,13L843,17L835,17L828,17L824,18L816,17L812,18L803,16L797,13L792,18L785,17L778,11L770,10L765,16L759,17L751,11L744,8L741,7L735,16L732,7L724,18L721,17L712,17L705,16L701,12L697,16L692,10L684,16L679,14L672,13L665,18L657,10L651,18L645,12L637,18L630,13L623,7L618,13L613,15L605,11L598,7L589,16L582,13L573,15L568,17L565,16L556,11L551,18L545,17L539,16L534,18L526,16L522,11L516,13L509,16L502,12L496,16L487,17L479,17L475,15L469,18L461,12L455,13L448,18L444,17L441,16L432,9L427,14L420,16L413,17L408,17L403,7L398,18L395,16L386,17L380,17L376,13L370,15L364,8L360,16L352,14L346,17L340,18L334,18L330,16L325,16L318,13L313,17L308,11L304,14L297,17L294,13L286,14L282,17L277,16L272,13L263,15L260,18L253,11L248,14L240,17L232,8L224,16L219,18L215,14L209,11L203,18L194,17L188,18L182,16L175,14L166,7L159,18L153,18L148,15L141,16L136,16L129,18L124,17L116,17L111,17L106,13L100,18L96,12L90,17L83,9L77,13L74,9L69,15L62,11L57,12L51,18L43,14L37,17L28,18L22,18L18,18L12,16L9,16L0,13Z"/></svg>
+
+  <img class="flood-plate" src="plates/footer-rev.png" alt="" />
+
+  <div class="flood-in">
+    <p class="mono rv">Personalization &middot; RL &middot; Interfaces</p>
+    <h2 class="disp rv">Build the instruments</h2>
+    <div class="frule rv"></div>
+    <p class="copy rv">We are hiring researchers and engineers to work on personalization, reinforcement learning on real collaboration, and the interfaces around both. San Francisco.</p>
+    <div class="rv"><a class="btn btn--rev" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════  COLOPHON  ═══════════════════════════ -->
+<footer class="colophon">
+  <i class="crop bl"></i><i class="crop br"></i>
+  <div class="device" aria-hidden="true">
+    <span class="r"></span>
+    <svg viewBox="0 0 24 30"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
+    <span class="r"></span>
+  </div>
+  <div class="name">Long Horizon Research</div>
+  <div class="col-meta mono-lc">
+    <span>Sundial &middot; Instrument 01</span>
+    <span>San Francisco &middot; 2026</span>
+  </div>
+  <div class="folio">&middot; iv &middot;</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── reveal ── */
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+  document.querySelectorAll('.rv').forEach(function (el, i) {
+    el.style.transitionDelay = (Math.min(i, 3) * 80) + 'ms';
+    io.observe(el);
+  });
+
+  /* ── address slip types itself ── */
+  var LINES = [
+    { pre: 'mail', cmd: 'team@longhorizonresearch.com' },
+    { pre: 'mail', cmd: 'team@longhorizonresearch.com' }
+  ];
+  var pre = document.getElementById('t-pre');
+  var cmd = document.getElementById('t-cmd');
+  var timer = null;
+  function type(i) {
+    clearTimeout(timer);
+    var line = LINES[i];
+    pre.textContent = line.pre;
+    if (reduced) { cmd.textContent = line.cmd; return; }
+    cmd.textContent = '';
+    var n = 0;
+    (function step() {
+      cmd.textContent = line.cmd.slice(0, ++n);
+      if (n < line.cmd.length) timer = setTimeout(step, 34);
+    })();
+  }
+  document.querySelectorAll('.slip .tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.slip .tabs button').forEach(function (o) { o.setAttribute('aria-selected', String(o === b)); });
+      type(Number(b.dataset.line));
+    });
+  });
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd.textContent).catch(function () {});
+    }
+    copyBtn.style.color = '#0e2c42';
+    setTimeout(function () { copyBtn.style.color = ''; }, 900);
+  });
+
+  /* ── the specimen rules itself in ── */
+  var ledger = document.getElementById('ledger');
+  var rows = ledger.querySelectorAll('.ledrow');
+  var gauge = document.getElementById('gauge');
+  var lio = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      lio.unobserve(e.target);
+      rows.forEach(function (r, i) {
+        setTimeout(function () {
+          r.classList.add('on');
+          if (r.contains(gauge)) setTimeout(function () { gauge.style.width = '72%'; }, 70);
+        }, reduced ? 0 : 250 * i);
+      });
+    });
+  }, { threshold: 0.2 });
+  lio.observe(ledger);
+
+  /* ── question / method ── */
+  var tBtns = document.querySelectorAll('.toggle button');
+  var copies = document.querySelectorAll('.e-body p.copy');
+  copies.forEach(function (p) { p.style.transition = 'opacity .18s linear'; });
+  tBtns.forEach(function (b, idx) {
+    b.addEventListener('click', function () {
+      tBtns.forEach(function (o) { o.setAttribute('aria-selected', String(o === b)); });
+      copies.forEach(function (p) {
+        p.style.opacity = '0';
+        setTimeout(function () {
+          p.textContent = idx === 0 ? p.dataset.q : p.dataset.m;
+          p.style.opacity = '1';
+        }, 180);
+      });
+    });
+  });
+
+  /* ── running side-title + plate parallax ── */
+  var side = document.getElementById('sidefol');
+  var plates = Array.prototype.slice.call(document.querySelectorAll('.e-plate img, .item figure img'));
+  var ticking = false;
+  function frame() {
+    ticking = false;
+    var vh = window.innerHeight;
+    plates.forEach(function (img) {
+      var r = img.parentElement.getBoundingClientRect();
+      if (r.bottom < -180 || r.top > vh + 180) return;
+      var t = (r.top + r.height / 2 - vh / 2) / vh;
+      img.style.transform = 'translate3d(0,' + (-t * 16) + 'px,0)';
+    });
+    side.classList.toggle('on', window.scrollY > vh * 0.85);
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  type(0);
+  frame();
+})();
+</script>
+</body>
+</html>
