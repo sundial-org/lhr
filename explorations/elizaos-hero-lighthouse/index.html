@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Long Horizon Research</title>
+<title>Sundial · Teach the model when.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -257,25 +257,39 @@ footer{background:var(--bone);color:var(--black)}
   .vtrack,.mtrack{animation:none}
   .rotator p{transition:none}
 }
+
+.nav-mail{display:none}
+.inst-sun{margin-top:54px;padding-top:44px;border-top:1px solid rgba(255,255,255,.35);align-items:center}
+.sun-glyph{width:110px;height:110px;flex:none;opacity:.9}
+html[data-navv="b"] nav a{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;text-transform:lowercase;letter-spacing:0}
+html[data-navv="b"] nav{gap:0}
+html[data-navv="b"] nav a + a::before{content:"/";margin:0 14px;opacity:.4}
+html[data-navv="c"] nav{position:absolute;left:50%;transform:translateX(-50%)}
+html[data-navv="d"] nav{gap:10px}
+html[data-navv="d"] nav a{border:1.5px solid currentColor;padding:7px 14px;line-height:1}
+html[data-navv="d"] nav a:hover{opacity:1;background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+html[data-navv="e"] nav a{display:none}
+html[data-navv="e"] nav a.nav-mail{display:inline;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 </style>
 </head>
 <body>
+<script>(function(){var v=new URLSearchParams(location.search).get('nav');if(v)document.documentElement.dataset.navv=v;})();</script>
 
 <header>
-  <a class="mark" href="#top"><span class="full">LONGHORIZON</span><span class="short">LHR</span><span class="px">[R]</span></a>
-  <nav>
+  <a class="mark" href="#top"><span class="full">SUNDIAL</span><span class="short">SUN</span><span class="px">[RESEARCH]</span></a>
+  <nav id="mnav">
     <a href="#research">Research</a>
-    <a href="#instruments">Instruments</a>
-    <a href="#hiring">Hiring</a>
-    <a href="#contact">Contact</a>
+    <a href="#instruments">The editor</a>
+    <a href="#hiring">Join us</a>
+    <a class="nav-mail" href="mailto:team@sundial.md">team@sundial.md</a>
   </nav>
 </header>
 
 <section class="hero" id="top">
   <div>
-    <h1>The agents are here.<br>The instruments are not.</h1>
-    <p>A research lab in San Francisco studying how people and agents work on the same page.</p>
-    <a class="btn btn-solid" href="#instruments">See Sundial</a>
+    <h1>Teach the model when.</h1>
+    <p>Sundial is a research lab studying how people and models write together. We build the surface where the collaboration happens, and study how a model learns when to act, when to ask, and when to leave the text alone.</p>
+    <a class="btn btn-solid" href="#instruments">See the editor</a>
   </div>
 </section>
 
@@ -294,8 +308,8 @@ footer{background:var(--bone);color:var(--black)}
 
 <section class="welcome">
   <div>
-    <h2>Welcome to Long Horizon Research.</h2>
-    <p>Machines already do most of the drafting. What is missing is the instrument: the surface where a person still thinks, decides and reviews at the speed the drafting now happens.</p>
+    <h2>Welcome to Sundial.</h2>
+    <p>Models write fluently. What they lack is calibration: knowing when to act, when to ask, when to suggest, when to abstain. That cannot be learned from the internet, only from the record of real work with people. Sundial exists to build the instrument that keeps that record, and to learn from it.</p>
     <a class="btn btn-ghost" href="#research">Read the questions</a>
   </div>
   <div class="vscroll" aria-hidden="true">
@@ -357,30 +371,39 @@ footer{background:var(--bone);color:var(--black)}
 
 <div class="marquee on-orange" aria-hidden="true">
   <div class="mtrack">
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
   </div>
   <div class="mtrack">
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
-    <div class="unit"><span class="mono">(HUMAN AGENT INTERACTION)</span><span class="mono">&#8599;</span><span class="word">LONGHORIZON<span class="px">[R]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
+    <div class="unit"><span class="mono">(TEACH THE MODEL WHEN)</span><span class="mono">&#8599;</span><span class="word">SUNDIAL<span class="px">[RESEARCH]</span></span><span class="mono">&#9635;</span></div>
   </div>
 </div>
 
 <section class="instruments" id="instruments">
-  <p class="eyebrow">First instrument</p>
+  <p class="eyebrow">Instruments</p>
   <div class="inst-body">
     <img class="inst-art" src="img/instrument.svg" alt="Line drawing of a sundial: a dial face, hour marks and a gnomon casting a wedge of light">
     <div>
       <div class="rotator">
-        <p class="on">Sundial is a shared workspace where people and agents write together.</p>
+        <p class="on">The Sundial editor is a shared workspace where people and agents write together.</p>
         <p>Every edit is attributed. Every change is reviewable. Nothing lands unseen.</p>
         <p>It is the first of a series. Each one holds to the same rule: the person stays in the driver seat.</p>
       </div>
-      <a class="inst-link" href="https://sundialhub.com" target="_blank" rel="noopener">sundialhub.com <span aria-hidden="true">&#8599;</span></a>
+      <a class="inst-link" href="https://sundial.md" target="_blank" rel="noopener">sundial.md <span aria-hidden="true">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="inst-body inst-sun">
+    <svg class="sun-glyph" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="8" y="14" width="32" height="20"/><path d="M14 14v6M20 14v10M26 14v6M32 14v10M8 28h32"/></svg>
+    <div>
+      <div class="rotator" style="min-height:0">
+        <p class="on">Sun is a fine-grained record of human-agent work: every edit, message, tool call, and review, captured as it happens. A system of record for the work. In the workshop now.</p>
+      </div>
     </div>
   </div>
 
@@ -433,7 +456,7 @@ footer{background:var(--bone);color:var(--black)}
     </div>
     <div class="stat">
       <p class="lab">Apply</p>
-      <a class="mail" href="mailto:team@longhorizonresearch.com">team@longhorizon<br>research.com</a>
+      <a class="mail" href="mailto:team@sundial.md">team@<br>sundial.md</a>
       <p class="sub" style="margin-top:16px">San Francisco. Send us something you made.</p>
     </div>
   </div>
@@ -441,32 +464,32 @@ footer{background:var(--bone);color:var(--black)}
 
 <section class="cta" id="contact">
   <h2>Build the Instruments</h2>
-  <a class="btn btn-ghost btn-dark-ghost" href="mailto:team@longhorizonresearch.com">Contact Us</a>
+  <a class="btn btn-ghost btn-dark-ghost" href="mailto:team@sundial.md">Contact Us</a>
 </section>
 
 <footer>
   <div class="wordmark">
-    <span class="big">LONGHORIZON</span><span class="px">[LHR]</span>
+    <span class="big">SUNDIAL</span><span class="px">[RESEARCH]</span>
   </div>
   <div class="fcols">
-    <div><h4>Long<br>Horizon</h4></div>
+    <div><h4>Sundial<br>Research</h4></div>
     <ul>
       <li><a href="#research">Research</a></li>
-      <li><a href="#instruments">Instruments</a></li>
-      <li><a href="#hiring">Hiring</a></li>
+      <li><a href="#instruments">The editor</a></li>
+      <li><a href="#hiring">Join us</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <ul class="flinks">
-      <li><a href="https://sundialhub.com" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 12V6M12 12l5 3.5"/></svg>Sundial</a></li>
-      <li><a href="mailto:team@longhorizonresearch.com">
+      <li><a href="https://sundial.md" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 12V6M12 12l5 3.5"/></svg>The editor</a></li>
+      <li><a href="mailto:team@sundial.md">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14"/><path d="M3 6l9 7 9-7"/></svg>Email</a></li>
       <li><a href="#hiring">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>San Francisco</a></li>
     </ul>
   </div>
   <div class="checker" aria-hidden="true"></div>
-  <p class="legal">Long Horizon Research. San Francisco, California.</p>
+  <p class="legal">Sundial Research. San Francisco, California.</p>
 </footer>
 
 <script>

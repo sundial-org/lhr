@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Long Horizon Research · The agents are here. The instruments are not.</title>
-<meta name="description" content="A research lab in San Francisco studying human-agent interaction. First instrument: Sundial." />
+<title>Sundial · Teach the model when.</title>
+<meta name="description" content="Sundial is a research lab studying how people and models write together." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -287,11 +287,38 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   .e-no{grid-column:1;font-size:34px;margin-bottom:14px}
   .e-plate,.e-body{grid-column:1}
 }
+
+.idesc{font-family:var(--body,Georgia),Georgia,serif;font-size:14px;line-height:1.55;margin-top:9px;max-width:36ch;color:var(--ink);opacity:.82}
+.nav-mail{display:none}
+
+/* nav variants, picked via ?nav= */
+html[data-navv="b"] .mast nav a{font-family:var(--disp);font-size:15px;letter-spacing:0;text-transform:none;font-style:italic;font-weight:500}
+html[data-navv="b"] .mast nav a:nth-of-type(1)::before{content:"i\2002";font-family:var(--mono);font-size:9.5px;font-style:normal;color:var(--ink-45);vertical-align:2px}
+html[data-navv="b"] .mast nav a:nth-of-type(2)::before{content:"ii\2002";font-family:var(--mono);font-size:9.5px;font-style:normal;color:var(--ink-45);vertical-align:2px}
+html[data-navv="b"] .mast nav a:nth-of-type(3)::before{content:"iii\2002";font-family:var(--mono);font-size:9.5px;font-style:normal;color:var(--ink-45);vertical-align:2px}
+
+html[data-navv="c"] .mast-row{flex-direction:column;align-items:center;gap:15px;padding-bottom:16px}
+html[data-navv="c"] .mark b{font-size:19px;letter-spacing:.26em}
+html[data-navv="c"] .mast nav{gap:0}
+html[data-navv="c"] .mast nav a{font-size:10px}
+html[data-navv="c"] .mast nav a + a::before{content:"\00B7";margin:0 15px;color:var(--ink-45)}
+html[data-navv="c"] .mast nav a::after{display:none}
+
+html[data-navv="d"] .mast nav{flex:1;justify-content:flex-end;position:relative;margin-left:38px}
+html[data-navv="d"] .mast nav::before{content:"";position:absolute;left:0;right:calc(100% - 0px);bottom:6px}
+html[data-navv="d"] .mast-row{align-items:baseline}
+html[data-navv="d"] .mast nav{gap:0;background-image:radial-gradient(circle,var(--ink-24) 1px,transparent 1.2px);background-size:9px 3px;background-position:0 68%;background-repeat:repeat-x}
+html[data-navv="d"] .mast nav a{background:var(--paper);padding:0 17px 3px}
+html[data-navv="d"] .mast nav a:last-of-type{padding-right:0}
+html[data-navv="d"] .mast nav a:first-of-type{margin-left:26px}
+
+html[data-navv="e"] .mast nav a{display:none}
+html[data-navv="e"] .mast nav a.nav-mail{display:inline;font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:lowercase}
 </style>
 </head>
 <body>
 <div class="fibre"></div>
-<div class="sidefol" id="sidefol">Long Horizon Research</div>
+<div class="sidefol" id="sidefol">Sundial Research</div>
 
 <!-- ═══════════════════════════  MASTHEAD  ═══════════════════════════ -->
 <div class="mast">
@@ -299,34 +326,30 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <div class="mast-row">
     <a class="mark" href="#top">
       <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
-      <b>Long Horizon Research</b>
+      <b>Sundial</b>
     </a>
-    <nav>
+    <nav id="mnav">
       <a href="#research">Research</a>
-      <a href="#instruments">Instruments</a>
-      <a href="#hiring">Join</a>
-      <a href="https://sundialhub.com">Sundial &rarr;</a>
+      <a href="#instruments">The editor</a>
+      <a href="#hiring">Join us</a>
+      <a class="nav-mail" href="mailto:team@sundial.md">team@sundial.md</a>
     </nav>
   </div>
   <div class="rules"></div>
-  <div class="runhead mono">
-    <span>San Francisco &middot; 2026</span>
-    <span>Human-Agent Interaction</span>
-  </div>
 </div>
 
 <!-- ═══════════════════════════  HALF-TITLE  ═══════════════════════════ -->
 <header class="hero" id="top">
   <div>
-    <p class="mono rv" style="color:var(--ink-45)">No. 01 &middot; San Francisco</p>
-    <h1 class="disp rv">The agents are here.<br />The instruments are not.</h1>
+    <h1 class="disp rv">Teach the model when.</h1>
+    <p class="copy rv" style="margin-top:26px;max-width:46ch">Sundial is a research lab studying how people and models write together. We build the surface where the collaboration happens, and study how a model learns when to act, when to ask, and when to leave the text alone.</p>
 
     <div class="lede rv">
       <div>
-        <span class="lbl mono">See the first instrument</span>
-        <a class="btn" href="https://sundialhub.com">
+        <span class="lbl mono">The first instrument</span>
+        <a class="btn" href="https://sundial.md">
           <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
-          Open Sundial</a>
+          Open the editor</a>
       </div>
       <div>
         <span class="lbl mono">Or write to the lab</span>
@@ -349,7 +372,6 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
 
   <div class="hero-plate rv">
     <div class="plate"><img src="plates/hero.png" alt="Engraving of an observer taking a reading" /></div>
-    <div class="pcap"><span>Plate i</span><span>Frontispiece</span></div>
   </div>
 </header>
 
@@ -366,7 +388,6 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
       <div class="ledrow"><span class="k">v</span><span>every change attributed</span><span class="who">ledger</span></div>
     </div>
   </div>
-  <div class="spec-cap"><span>Plate ii &middot; tipped in</span><span>Sundial</span></div>
 </section>
 
 <!-- ═══════════════════════════  INSTRUMENTS  ═══════════════════════════ -->
@@ -381,10 +402,10 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
         <figure><img src="plates/inst-01.png" alt="" /></figure>
         <span class="guard"></span>
       </div>
-      <div class="pcap"><span>Plate iii</span><span>Live</span></div>
-      <h2>Sundial</h2>
-      <div class="sub mono"><span>Instrument 01</span></div>
-      <div class="act"><a class="btn" href="https://sundialhub.com">
+      <h2>The editor</h2>
+      <div class="sub mono"><span>Instrument 01 &middot; Live</span></div>
+      <p class="idesc">A shared workspace where people and agents write together. Every edit is attributed; every change can be reviewed, kept, or reversed.</p>
+      <div class="act"><a class="btn" href="https://sundial.md">
         <svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
         Open</a></div>
     </article>
@@ -394,9 +415,9 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
         <figure><img src="plates/inst-02.png" alt="" /></figure>
         <span class="guard"></span>
       </div>
-      <div class="pcap"><span>Plate iv</span><span>In the lab</span></div>
-      <h2>Unnamed</h2>
-      <div class="sub mono"><span>Instrument 02</span></div>
+      <h2>Sun</h2>
+      <div class="sub mono"><span>Instrument 02 &middot; In the workshop</span></div>
+      <p class="idesc">A fine-grained record of the work itself: every edit, message, tool call, and review, captured as it happens. A system of record for human-agent work.</p>
       <div class="act"><span class="tag">Being built</span></div>
     </article>
 
@@ -405,7 +426,6 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
         <figure><img src="plates/inst-03.png" alt="" /></figure>
         <span class="guard"></span>
       </div>
-      <div class="pcap"><span>Plate v</span><span>Unstarted</span></div>
       <h2>Empty plinth</h2>
       <div class="sub mono"><span>Instrument 03</span></div>
       <div class="act"><span class="tag">First of a series</span></div>
@@ -425,7 +445,7 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">01</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f1.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate vi</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Surface</span><i class="r"></i></p>
       <h3>Room To Think</h3>
@@ -436,7 +456,7 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">02</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f2.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate vii</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Judgment</span><i class="r"></i></p>
       <h3>Learned From Work</h3>
@@ -447,7 +467,7 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">03</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f3.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate viii</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Many Hands</span><i class="r"></i></p>
       <h3>One Document</h3>
@@ -458,7 +478,7 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">04</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f4.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate ix</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Trace</span><i class="r"></i></p>
       <h3>Every Edit Named</h3>
@@ -469,7 +489,7 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">05</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f5.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate x</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Review</span><i class="r"></i></p>
       <h3>Nothing Slips Past</h3>
@@ -480,11 +500,11 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
   <article class="entry rv">
     <div class="e-no">06</div>
     <div class="e-plate"><div class="plate"><figure><img src="plates/f6.png" alt="" /></figure></div>
-      <div class="pcap"><span>Plate xi</span></div></div>
+</div>
     <div class="e-body">
       <p class="hd mono"><span>Series</span><i class="r"></i></p>
       <h3>First Of Many</h3>
-      <p class="copy" data-q="Sundial is the first instrument, not the last. The plinths beside it are waiting." data-m="Each instrument answers one question and teaches us what the next one has to be.">Sundial is the first instrument, not the last. The plinths beside it are waiting.</p>
+      <p class="copy" data-q="The editor is the first instrument, not the last. The plinths beside it are waiting." data-m="Each instrument answers one question and teaches us what the next one has to be.">The editor is the first instrument, not the last. The plinths beside it are waiting.</p>
     </div>
   </article>
 </section>
@@ -500,8 +520,8 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
     <p class="mono rv">Personalization &middot; RL &middot; Interfaces</p>
     <h2 class="disp rv">Build the instruments</h2>
     <div class="frule rv"></div>
-    <p class="copy rv">We are hiring researchers and engineers to work on personalization, reinforcement learning on real collaboration, and the interfaces around both. San Francisco.</p>
-    <div class="rv"><a class="btn btn--rev" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></div>
+    <p class="copy rv">We are a small team hiring researchers and engineers in personalization, reinforcement learning, and interfaces. We read the work before the r&eacute;sum&eacute;. San Francisco.</p>
+    <div class="rv"><a class="btn btn--rev" href="mailto:team@sundial.md">team@sundial.md</a></div>
   </div>
 </section>
 
@@ -513,15 +533,14 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
     <svg viewBox="0 0 24 30"><path d="M12 2 3 28h18L12 2Zm0 7.6 5.3 15.6H12V9.6Z"/></svg>
     <span class="r"></span>
   </div>
-  <div class="name">Long Horizon Research</div>
+  <div class="name">Sundial Research</div>
   <div class="col-meta mono-lc">
-    <span>Sundial &middot; Instrument 01</span>
-    <span>San Francisco &middot; 2026</span>
+    <span>San Francisco</span>
   </div>
-  <div class="folio">&middot; iv &middot;</div>
 </footer>
 
 <script>
+(function(){var v=new URLSearchParams(location.search).get('nav');if(v)document.documentElement.dataset.navv=v;})();
 (function () {
   'use strict';
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -537,8 +556,8 @@ p.copy{margin:0;font-size:15.4px;line-height:1.66;color:var(--ink-70);max-width:
 
   /* ── address slip types itself ── */
   var LINES = [
-    { pre: 'mail', cmd: 'team@longhorizonresearch.com' },
-    { pre: 'mail', cmd: 'team@longhorizonresearch.com' }
+    { pre: 'mail', cmd: 'team@sundial.md' },
+    { pre: 'mail', cmd: 'team@sundial.md' }
   ];
   var pre = document.getElementById('t-pre');
   var cmd = document.getElementById('t-cmd');
