@@ -1,0 +1,21 @@
+         draft                  review                       document            trace
+           |                       |                             |                 |
+   agent  -+- proposal  +  person -+- accept      --->      attributed    +    judgment
+           |                       |                             |                 |
+        context                 revert                        history           signal
+
+
+                         trace    trace    trace
+                            \       |       /
+                             \      |      /
+      judgment    <---        +-----+-----+     --->    preference    --->    proposal
+                             /      |      \
+                            /       |       \
+                        accept   comment  revert
+
+
+   person 1 --\                                   /-- kept
+   agent  1 ---+--- one document   --- review ---+--- reverted
+   person 2 --/                                   \-- still open
+                          |
+                 who did what, when

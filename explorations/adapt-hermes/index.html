@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Long Horizon Research · The agents are here. The instruments are not.</title>
+<meta name="description" content="A research lab in San Francisco studying human-agent interaction. First instrument: Sundial." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ─────────────────────────────  TOKENS  ───────────────────────────── */
+:root{
+  --blue:#0000f2;
+  --paper:#ffffff;
+  --ink:#f5f5f5;
+  --tint:rgba(255,255,255,.09);
+  --tint-2:rgba(255,255,255,.16);
+  --ghost:rgba(255,255,255,.14);
+  --frame:30px;
+  --gutter:120px;
+  --gap:48px;
+  --display:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --eyebrow:11px;
+  --body:12.8px;
+}
+@media (max-width:1100px){:root{--gutter:56px;--gap:32px;--frame:18px}}
+@media (max-width:720px){:root{--gutter:24px;--gap:26px;--frame:12px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--blue);color:var(--ink);
+  font-family:var(--mono);font-size:var(--body);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+::selection{background:var(--ink);color:var(--blue)}
+
+/* ─────────────────────────────  FRAME + GRAIN  ───────────────────────────── */
+.frame{position:fixed;inset:0;z-index:90;pointer-events:none}
+.frame i{position:absolute;background:var(--blue);display:block}
+.frame i:nth-child(1){top:0;left:0;right:0;height:var(--frame)}
+.frame i:nth-child(2){bottom:0;left:0;right:0;height:var(--frame)}
+.frame i:nth-child(3){top:0;bottom:0;left:0;width:var(--frame)}
+.frame i:nth-child(4){top:0;bottom:0;right:0;width:var(--frame)}
+.grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(125% 95% at 50% 34%,transparent 55%,rgba(0,0,86,.20) 100%)}
+
+/* ─────────────────────────────  PRIMITIVES  ───────────────────────────── */
+.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.10em}
+.eyebrow{font-size:var(--eyebrow);letter-spacing:.18em;text-transform:uppercase;
+  font-family:var(--mono);margin:0;line-height:1.5}
+.disp{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  letter-spacing:.03em;line-height:.88;margin:0;font-variation-settings:"opsz" 96}
+p.copy{font-family:var(--mono);text-transform:uppercase;letter-spacing:.10em;
+  font-size:var(--body);line-height:1.4;margin:0}
+
+a{color:inherit;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--blue);
+  font-family:var(--mono);text-transform:uppercase;letter-spacing:.10em;font-size:var(--body);
+  padding:14px 22px;line-height:1;border:1px solid var(--ink);
+  transition:background .28s cubic-bezier(.2,.7,.2,1),color .28s,transform .28s}
+.btn:hover{background:transparent;color:var(--ink);transform:translateY(-2px)}
+.btn svg{width:13px;height:13px;flex:none;fill:currentColor}
+.btn--ghost{background:transparent;color:var(--ink)}
+.btn--ghost:hover{background:var(--ink);color:var(--blue)}
+
+/* ─────────────────────────────  NAV  ───────────────────────────── */
+.nav{position:absolute;top:calc(var(--frame) + 26px);left:0;right:0;z-index:60;
+  padding:0 var(--gutter);display:flex;align-items:flex-start;justify-content:space-between}
+.nav a.link{font-family:var(--display);font-weight:500;text-transform:uppercase;
+  letter-spacing:.03em;font-size:13.4px;line-height:1.5;position:relative}
+.nav a.link::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:1px;
+  background:currentColor;transition:right .35s cubic-bezier(.2,.7,.2,1)}
+.nav a.link:hover::after{right:0}
+.nav .slot{display:flex;flex:1;justify-content:space-between;padding-right:150px}
+.nav .slot.r{padding:0 0 0 150px}
+.brand{text-align:center;flex:none}
+.brand b{display:block;font-family:var(--display);font-weight:500;text-transform:uppercase;
+  letter-spacing:.03em;font-size:20px;line-height:1.18}
+.brand .marks{display:flex;gap:11px;justify-content:center;margin-top:9px;opacity:.85}
+.brand .marks span{width:15px;height:15px;display:grid;place-items:center}
+.brand .marks svg{width:15px;height:15px;fill:currentColor;transition:opacity .25s}
+.brand .marks a:hover svg{opacity:.6}
+.caret{display:inline-block;width:0;height:0;margin-left:6px;vertical-align:middle;
+  border:4px solid transparent;border-top-color:currentColor;transform:translateY(2px)}
+
+/* ─────────────────────────────  HERO  ───────────────────────────── */
+.hero{position:relative;min-height:860px;padding:0 var(--gutter);
+  display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.hero-art{position:absolute;top:172px;right:calc(var(--gutter) - 46px);width:606px;max-width:46vw;
+  pointer-events:none;user-select:none;z-index:0;
+  -webkit-mask-image:radial-gradient(72% 72% at 50% 48%,#000 52%,transparent 100%);
+          mask-image:radial-gradient(72% 72% at 50% 48%,#000 52%,transparent 100%);
+  opacity:.8;animation:drift 18s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.012)}}
+.hero-inner{position:relative;z-index:2;max-width:760px}
+.hero h1{font-size:clamp(38px,4.45vw,66px);margin:26px 0 0;color:var(--ink)}
+.hero .stack{margin-top:56px;display:flex;flex-direction:column;gap:15px;max-width:482px}
+.hero .stack + .stack{margin-top:34px}
+
+/* terminal box */
+.term{background:var(--ink);color:var(--blue);width:100%}
+.term .tabs{display:flex;gap:22px;padding:12px 16px 10px}
+.term .tabs button{background:none;border:none;cursor:pointer;font-family:var(--mono);
+  font-size:10.1px;line-height:1.5;color:rgba(0,0,242,.45);padding:0;transition:color .2s}
+.term .tabs button[aria-selected="true"]{color:var(--blue);font-weight:600}
+.term .line{display:flex;align-items:center;gap:7px;padding:0 16px 15px;
+  font-family:var(--mono);font-size:10.9px;line-height:1;white-space:nowrap;overflow:hidden}
+.term .dim{color:rgba(0,0,242,.45)}
+.term .cmd{font-weight:600}
+.term .cur{display:inline-block;width:6px;height:11px;background:var(--blue);
+  animation:blink 1.06s steps(1) infinite;vertical-align:-1px}
+@keyframes blink{50%{opacity:0}}
+.term .copy-btn{margin-left:auto;background:none;border:none;cursor:pointer;color:rgba(0,0,242,.45);
+  padding:0;display:grid;place-items:center;transition:color .2s}
+.term .copy-btn:hover{color:var(--blue)}
+.term .copy-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.4}
+
+/* ─────────────────────────────  DEMO PANEL  ───────────────────────────── */
+.demo{position:relative;z-index:20;padding:0 var(--frame);margin-top:14px}
+.demo-stage{position:relative;height:743px;overflow:hidden;background:#2323e6;
+  box-shadow:0 0 90px 40px rgba(70,70,255,.5)}
+.demo-stage::before{content:"";position:absolute;inset:-6%;
+  background:#2323e6 url("art/demo.png") center/cover no-repeat;
+  filter:blur(7px) grayscale(1) brightness(1.3) contrast(.9);transform:scale(1.05)}
+.demo-stage::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(rgba(12,12,228,.62),rgba(12,12,228,.62)),
+             radial-gradient(78% 78% at 50% 50%,rgba(0,0,150,.1),rgba(0,0,95,.5))}
+.ledger{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
+  width:606px;max-width:86%;background:#16161e;border-radius:11px;overflow:hidden;
+  box-shadow:0 34px 90px rgba(0,0,40,.6);font-family:var(--mono)}
+.ledger .bar{display:flex;align-items:center;gap:8px;padding:11px 14px;background:#22222c}
+.ledger .bar i{width:11px;height:11px;border-radius:50%;display:block}
+.ledger .bar i:nth-child(1){background:#ff5f57}
+.ledger .bar i:nth-child(2){background:#febc2e}
+.ledger .bar i:nth-child(3){background:#28c840}
+.ledger .bar span{flex:1;text-align:center;color:#c9c9d4;font-size:12.5px;margin-right:36px}
+.ledger .body{padding:20px 24px 26px;color:#e8e8f2;font-size:14.5px;line-height:2.05}
+.ledger .body .p{color:#f5f5ff;font-weight:500;margin-bottom:6px}
+.ledger .row{display:flex;gap:12px;opacity:0}
+.ledger .row.on{animation:rowin .5s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rowin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ledger .k{color:#6ec8ff;flex:none;width:15px}
+.ledger .who{color:#8b8ba6}
+.ledger .bar-fill{display:inline-block;height:13px;background:#5cc0ff;vertical-align:-2px;
+  width:0;transition:width 2.2s linear}
+
+/* ─────────────────────────────  INSTRUMENT CARDS  ───────────────────────────── */
+.cards{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);
+  gap:var(--gap);padding:60px var(--gutter) 120px}
+.card{position:relative;height:326px;display:grid;place-items:center;text-align:center;
+  background:var(--tint);overflow:hidden;transition:background .4s}
+.card:hover{background:var(--tint-2)}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.2;
+  transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover img{transform:scale(1.05)}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(58% 46% at 50% 50%,rgba(0,0,190,.62),transparent 72%)}
+.card .c-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:14px}
+.card h2{font-family:var(--display);font-weight:400;font-size:39px;line-height:1;margin:0;
+  text-transform:none;letter-spacing:0}
+.card .eyebrow{opacity:.85}
+.card .btn{padding:11px 18px;font-size:11.6px}
+.card--empty .c-in{opacity:.78}
+.card .tag{border:1px solid currentColor;padding:10px 15px;font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.10em;font-size:10.5px;line-height:1}
+
+/* ─────────────────────────────  FEATURE PANEL (inverted)  ───────────────────────────── */
+.panel{position:relative;background:var(--paper);color:var(--blue);
+  margin:0 var(--frame);padding:48px 0 0;overflow:hidden;z-index:2}
+.panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:96px var(--gap);
+  padding:0 calc(var(--gutter) - var(--frame));position:relative}
+.panel-rail{position:sticky;top:calc(var(--frame) + 30px);z-index:12;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:0 18px;margin-bottom:-73px;pointer-events:none}
+.panel-rail > *{pointer-events:auto}
+.badge{width:51px;height:73px;background:var(--blue);display:grid;place-items:center;border-radius:3px}
+.badge svg{width:40px;height:56px}
+.seg{display:flex;border:1px solid var(--blue);margin-top:14px}
+.seg button{background:none;border:none;cursor:pointer;color:var(--blue);font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.10em;font-size:10.5px;padding:8px 12px;line-height:1.5;
+  transition:background .25s,color .25s}
+.seg button + button{border-left:1px solid var(--blue)}
+.seg button[aria-selected="true"]{background:var(--blue);color:var(--paper)}
+.feat{display:flex;flex-direction:column}
+.feat .eyebrow{margin-bottom:22px}
+.feat h3{font-family:var(--display);font-weight:400;font-variation-settings:"opsz" 96;
+  text-transform:uppercase;letter-spacing:0;
+  font-size:39px;line-height:1;margin:0 0 44px;max-width:7.1em;min-height:2em}
+.feat figure{margin:0 0 30px;height:355px;overflow:hidden;background:var(--blue)}
+.feat figure img{width:100%;height:118%;object-fit:cover;display:block;will-change:transform}
+.feat p.copy{padding-right:0}
+.wm-clip{overflow:hidden;position:relative;margin-top:150px;
+  font-size:min(20.6vw,297px);height:.6em}
+.wordmark{font-family:var(--display);font-weight:400;font-variation-settings:"opsz" 96;
+  text-transform:uppercase;letter-spacing:.03em;color:var(--blue);
+  line-height:.8;white-space:nowrap;text-align:center;font-size:1em;
+  margin:0;transform:translateY(-.03em);user-select:none}
+
+/* ─────────────────────────────  FOOTER  ───────────────────────────── */
+.footer{position:relative;min-height:900px;padding:66px var(--gutter) 0;text-align:center;overflow:hidden}
+.footer .eyebrow{opacity:.95}
+.footer h2{font-size:clamp(38px,4.8vw,68px);margin:18px 0 20px;color:var(--ink)}
+.footer p.copy{max-width:640px;margin:0 auto 26px;letter-spacing:.10em}
+.f-ghost{position:absolute;left:50%;top:296px;transform:translateX(-50%);z-index:0;
+  font-family:var(--display);font-weight:400;font-variation-settings:"opsz" 96;
+  text-transform:uppercase;letter-spacing:.03em;
+  color:var(--ghost);line-height:.78;font-size:min(19vw,244px);text-align:center;
+  user-select:none;pointer-events:none;width:max-content}
+.f-art{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:1;
+  height:618px;width:auto;max-width:74vw;pointer-events:none;opacity:.96;
+  -webkit-mask-image:linear-gradient(#000 78%,transparent 100%);
+          mask-image:linear-gradient(#000 78%,transparent 100%)}
+.f-meta{position:absolute;bottom:calc(var(--frame) + 36px);z-index:3;font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.14em;font-size:var(--eyebrow);line-height:1.55}
+.f-meta.l{left:var(--gutter);text-align:left}
+.f-meta.r{right:var(--gutter);text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.f-mark{width:52px;height:62px;background:var(--ink);display:grid;place-items:center;border-radius:2px}
+.f-mark svg{width:40px;height:48px}
+
+/* ─────────────────────────────  REVEAL  ───────────────────────────── */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .hero-art{animation:none}
+  *{scroll-behavior:auto}
+}
+
+/* ─────────────────────────────  RESPONSIVE  ───────────────────────────── */
+@media (max-width:1000px){
+  .nav{flex-direction:column;align-items:center;gap:16px}
+  .nav .slot{display:none}
+  .hero{min-height:auto;padding-top:190px;padding-bottom:70px}
+  .hero-art{position:relative;order:2;top:auto;right:auto;width:100%;max-width:420px;
+    margin:44px auto -20px;display:block}
+  .hero-inner{order:1;max-width:none}
+  .hero .stack{max-width:none}
+  .demo-stage{height:460px}
+  .cards,.panel-grid{grid-template-columns:1fr}
+  .panel-grid{gap:56px}
+  .feat h3{min-height:0}
+  .panel-rail{display:none}
+  .feat figure{height:260px}
+  .footer{min-height:720px}
+  .f-meta{position:static;text-align:center;align-items:center;margin-top:40px}
+  .f-meta.r{align-items:center}
+  .f-art{position:relative;margin:40px auto 0;left:auto;transform:none;display:block;
+    height:auto;width:78%;max-width:78%}
+  .f-ghost{top:220px;font-size:22vw}
+}
+@media (max-width:560px){
+  .hero h1{font-size:33px}
+  .hero{padding-top:170px}
+  .feat h3,.card h2{font-size:31px}
+  .footer h2{font-size:32px}
+  .wm-clip{font-size:23vw;margin-top:80px}
+}
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+
+<!-- ═══════════════════════════  NAV  ═══════════════════════════ -->
+<nav class="nav">
+  <div class="slot">
+    <a class="link" href="#questions">Research</a>
+    <a class="link" href="#instruments">Instruments</a>
+  </div>
+  <div class="brand">
+    <b>Long Horizon<br />Research</b>
+    <div class="marks">
+      <a href="https://sundialhub.com" aria-label="Sundial">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4 4.2 19.4h15.6L12 3.4Zm0 4.6 4.6 9.4H12V8Z"/></svg>
+      </a>
+      <a href="mailto:team@longhorizonresearch.com" aria-label="Email the lab">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.6 5.4h18.8v13.2H2.6V5.4Zm1.9 1.9 7.5 5.3 7.5-5.3H4.5Zm14.9 1.5-7.4 5.2-7.4-5.2v7.9h14.8V8.8Z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="slot r">
+    <a class="link" href="#hiring">Join<span class="caret"></span></a>
+    <a class="link" href="https://sundialhub.com">Sundial &nbsp;&rarr;</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════  HERO  ═══════════════════════════ -->
+<header class="hero">
+  <img class="hero-art" src="art/hero.png" alt="" />
+  <div class="hero-inner">
+    <p class="eyebrow rv">San Francisco &bull; Human-Agent Interaction</p>
+    <h1 class="disp rv">The agents<br />are here.<br />The instruments<br />are not.</h1>
+
+    <div class="stack rv">
+      <p class="eyebrow">See the first instrument</p>
+      <div><a class="btn" href="https://sundialhub.com">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4 4.2 19.4h15.6L12 3.4Zm0 4.6 4.6 9.4H12V8Z"/></svg>
+        Open Sundial</a></div>
+    </div>
+
+    <div class="stack rv">
+      <p class="eyebrow">Or write to the lab</p>
+      <div class="term">
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" data-line="0">research</button>
+          <button role="tab" aria-selected="false" data-line="1">engineering</button>
+        </div>
+        <div class="line">
+          <span class="dim" id="t-pre">mail</span>
+          <span class="cmd" id="t-cmd"></span><span class="cur"></span>
+          <button class="copy-btn" id="copyBtn" aria-label="Copy address">
+            <svg viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 5.5h-11v11"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════  DEMO PANEL  ═══════════════════════════ -->
+<section class="demo">
+  <div class="demo-stage">
+    <div class="ledger" id="ledger">
+      <div class="bar"><i></i><i></i><i></i><span>Sundial &middot; shared draft</span></div>
+      <div class="body">
+        <div class="p">&#126; &#37; one document, four hands</div>
+        <div class="row"><span class="k">&#8226;</span><span>paragraph 4 redrafted<span class="who"> &nbsp;agent</span></span></div>
+        <div class="row"><span class="k">&#8226;</span><span>sentence 2 reverted<span class="who"> &nbsp;author</span></span></div>
+        <div class="row"><span class="k">&#8226;</span><span>comment resolved<span class="who"> &nbsp;reviewer</span></span></div>
+        <div class="row"><span class="k">&#8226;</span><span>reviewing &nbsp;[<span class="bar-fill" id="barFill"></span>]</span></div>
+        <div class="row"><span class="k">&#8226;</span><span>every change attributed<span class="who"> &nbsp;ledger</span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════  INSTRUMENTS  ═══════════════════════════ -->
+<section class="cards" id="instruments">
+  <article class="card rv">
+    <img src="art/inst-01.png" alt="" />
+    <div class="c-in">
+      <p class="eyebrow">Instrument 01 &bull; Live</p>
+      <h2>Sundial</h2>
+      <a class="btn" href="https://sundialhub.com">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4 4.2 19.4h15.6L12 3.4Zm0 4.6 4.6 9.4H12V8Z"/></svg>
+        Open</a>
+    </div>
+  </article>
+  <article class="card card--empty rv">
+    <img src="art/inst-02.png" alt="" />
+    <div class="c-in">
+      <p class="eyebrow">Instrument 02 &bull; In the lab</p>
+      <h2>Unnamed</h2>
+      <span class="tag">Being built</span>
+    </div>
+  </article>
+  <article class="card card--empty rv">
+    <img src="art/inst-03.png" alt="" />
+    <div class="c-in">
+      <p class="eyebrow">Instrument 03 &bull; Unstarted</p>
+      <h2>Empty plinth</h2>
+      <span class="tag">First of a series</span>
+    </div>
+  </article>
+</section>
+
+<!-- ═══════════════════════════  QUESTIONS PANEL  ═══════════════════════════ -->
+<section class="panel" id="questions">
+  <div class="panel-rail">
+    <span class="badge" aria-hidden="true">
+      <svg viewBox="0 0 40 56"><path fill="#fff" d="M20 8 8 46h24L20 8Zm0 9 6.6 21H20V17Z"/></svg>
+    </span>
+    <span class="seg" role="tablist">
+      <button role="tab" aria-selected="true">Question</button>
+      <button role="tab" aria-selected="false">Method</button>
+    </span>
+  </div>
+  <div class="panel-grid">
+    <article class="feat rv">
+      <p class="eyebrow">&#35;1 Surface</p>
+      <h3>Room To Think</h3>
+      <figure><img class="px" src="art/f1.png" alt="" /></figure>
+      <p class="copy" data-q="What is the best surface for a person to think, decide and review once machines do most of the drafting?" data-m="We build the surface, put real work through it, and watch where a person loses the thread.">What is the best surface for a person to think, decide and review once machines do most of the drafting?</p>
+    </article>
+
+    <article class="feat rv">
+      <p class="eyebrow">&#35;2 Judgment</p>
+      <h3>Learned From Work</h3>
+      <figure><img class="px" src="art/f2.png" alt="" /></figure>
+      <p class="copy" data-q="Can a model learn a person's judgment from the collaboration itself, rather than from anything they sit down and write out?" data-m="Personalization and reinforcement learning on real work, not on a bench of invented tasks.">Can a model learn a person's judgment from the collaboration itself, rather than from anything they sit down and write out?</p>
+    </article>
+
+    <article class="feat rv">
+      <p class="eyebrow">&#35;3 Many Hands</p>
+      <h3>One Document</h3>
+      <figure><img class="px" src="art/f3.png" alt="" /></figure>
+      <p class="copy" data-q="How do several people and several agents share one document without anyone losing track of who did what?" data-m="One shared state, many authors, every action carrying its author with it.">How do several people and several agents share one document without anyone losing track of who did what?</p>
+    </article>
+
+    <article class="feat rv">
+      <p class="eyebrow">&#35;4 Trace</p>
+      <h3>Every Edit Named</h3>
+      <figure><img class="px" src="art/f4.png" alt="" /></figure>
+      <p class="copy" data-q="Every edit, every comment, every acceptance and every reversal is a trace of judgment. We keep all of them." data-m="Attribution is recorded at the edit, so the record is a by-product of working rather than a chore.">Every edit, every comment, every acceptance and every reversal is a trace of judgment. We keep all of them.</p>
+    </article>
+
+    <article class="feat rv">
+      <p class="eyebrow">&#35;5 Review</p>
+      <h3>Nothing Slips Past</h3>
+      <figure><img class="px" src="art/f5.png" alt="" /></figure>
+      <p class="copy" data-q="If a machine wrote most of it, the reading matters more than the writing. Every change stays reviewable." data-m="Review is the primary act in Sundial, and the interface is measured on how well it supports it.">If a machine wrote most of it, the reading matters more than the writing. Every change stays reviewable.</p>
+    </article>
+
+    <article class="feat rv">
+      <p class="eyebrow">&#35;6 Series</p>
+      <h3>First Of Many</h3>
+      <figure><img class="px" src="art/f6.png" alt="" /></figure>
+      <p class="copy" data-q="Sundial is the first instrument, not the last. The plinths beside it are waiting." data-m="Each instrument answers one question and teaches us what the next one has to be.">Sundial is the first instrument, not the last. The plinths beside it are waiting.</p>
+    </article>
+  </div>
+
+  <div class="wm-clip"><div class="wordmark">Horizon</div></div>
+</section>
+
+<!-- ═══════════════════════════  FOOTER / HIRING  ═══════════════════════════ -->
+<footer class="footer" id="hiring">
+  <div class="f-ghost" aria-hidden="true">Long<br />Horizon</div>
+  <img class="f-art" src="art/footer.png" alt="" />
+
+  <div style="position:relative;z-index:3">
+    <p class="eyebrow rv">Personalization &bull; RL &bull; Interfaces</p>
+    <h2 class="disp rv">Build the instruments</h2>
+    <p class="copy rv">We are hiring researchers and engineers to work on personalization, reinforcement learning on real collaboration, and the interfaces around both. San Francisco.</p>
+    <div class="rv"><a class="btn" href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a></div>
+  </div>
+
+  <div class="f-meta l">Sundial &middot; Instrument 01</div>
+  <div class="f-meta r">
+    <span class="f-mark" aria-hidden="true">
+      <svg viewBox="0 0 40 48"><path fill="#0000f2" d="M20 5 7 43h26L20 5Zm0 9.5 7.2 23H20v-23Z"/></svg>
+    </span>
+    <span>Long Horizon Research<br />San Francisco &middot; 2026</span>
+  </div>
+</footer>
+
+<div class="frame"><i></i><i></i><i></i><i></i></div>
+<div class="grain"></div>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── reveal on scroll ── */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.06 });
+  document.querySelectorAll('.rv').forEach(function (el, i) {
+    el.style.transitionDelay = (Math.min(i, 4) * 70) + 'ms';
+    io.observe(el);
+  });
+
+  /* ── terminal: type the address, tabs swap it ── */
+  var LINES = [
+    { pre: 'mail', cmd: 'team@longhorizonresearch.com' },
+    { pre: 'mail', cmd: 'team@longhorizonresearch.com' }
+  ];
+  var pre = document.getElementById('t-pre');
+  var cmd = document.getElementById('t-cmd');
+  var typeTimer = null;
+  function type(i) {
+    clearTimeout(typeTimer);
+    var line = LINES[i];
+    pre.textContent = line.pre;
+    if (reduced) { cmd.textContent = line.cmd; return; }
+    cmd.textContent = '';
+    var n = 0;
+    (function step() {
+      cmd.textContent = line.cmd.slice(0, ++n);
+      if (n < line.cmd.length) typeTimer = setTimeout(step, 34);
+    })();
+  }
+  document.querySelectorAll('.term .tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.term .tabs button').forEach(function (o) { o.setAttribute('aria-selected', String(o === b)); });
+      type(Number(b.dataset.line));
+    });
+  });
+
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', function () {
+    var txt = cmd.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).catch(function () {});
+    }
+    copyBtn.style.color = '#0000f2';
+    setTimeout(function () { copyBtn.style.color = ''; }, 900);
+  });
+
+  /* ── ledger rows animate when the demo panel is on screen ── */
+  var ledger = document.getElementById('ledger');
+  var rows = ledger.querySelectorAll('.row');
+  var fill = document.getElementById('barFill');
+  var lio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      lio.unobserve(e.target);
+      rows.forEach(function (r, i) {
+        setTimeout(function () {
+          r.classList.add('on');
+          if (r.contains(fill)) setTimeout(function () { fill.style.width = '120px'; }, 60);
+        }, reduced ? 0 : 260 * i);
+      });
+    });
+  }, { threshold: 0.25 });
+  lio.observe(ledger);
+
+  /* ── question / method segmented control ── */
+  var segBtns = document.querySelectorAll('.seg button');
+  var copies = document.querySelectorAll('.feat p.copy');
+  segBtns.forEach(function (b, idx) {
+    b.addEventListener('click', function () {
+      segBtns.forEach(function (o) { o.setAttribute('aria-selected', String(o === b)); });
+      copies.forEach(function (p) {
+        p.style.opacity = '0';
+        setTimeout(function () {
+          p.textContent = idx === 0 ? p.dataset.q : p.dataset.m;
+          p.style.opacity = '1';
+        }, 180);
+      });
+    });
+  });
+  copies.forEach(function (p) { p.style.transition = 'opacity .18s linear'; });
+
+  /* ── parallax on the panel imagery ── */
+  var px = Array.prototype.slice.call(document.querySelectorAll('.px'));
+  var heroArt = document.querySelector('.hero-art');
+  var ghost = document.querySelector('.f-ghost');
+  var ticking = false;
+  function frame() {
+    ticking = false;
+    var vh = window.innerHeight;
+    px.forEach(function (img) {
+      var r = img.parentElement.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      var t = (r.top + r.height / 2 - vh / 2) / vh;
+      img.style.transform = 'translate3d(0,' + (-t * 34 - 26) + 'px,0)';
+    });
+    var y = window.scrollY;
+    if (heroArt && y < vh * 1.4) heroArt.style.marginTop = (y * 0.09) + 'px';
+    if (ghost) {
+      var gr = ghost.getBoundingClientRect();
+      if (gr.bottom > 0 && gr.top < vh) ghost.style.transform = 'translateX(-50%) translateY(' + ((gr.top - vh / 2) / vh * -28) + 'px)';
+    }
+  }
+  function onScroll() { if (!ticking && !reduced) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  type(0);
+  frame();
+})();
+</script>
+</body>
+</html>

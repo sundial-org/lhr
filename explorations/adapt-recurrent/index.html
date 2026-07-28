@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Long Horizon Research</title>
+<meta name="description" content="Long Horizon Research is a lab in San Francisco studying human-agent interaction. First instrument: Sundial." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@300..700&family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#000;
+  --paper:#fff;
+  --accent:#e82755;
+  --wire:#e827a5;
+  --key:#5250d8;
+  --glass:rgba(255,255,255,.25);
+  --glass-shadow:0 4px 16px 0 rgba(0,0,0,.54);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);overflow:hidden}
+body{
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);
+}
+a{color:inherit;text-decoration:none}
+
+/* ---------- stage: a 1440x900 composition, scaled to fit ---------- */
+#fit{position:fixed;inset:0;display:grid;place-items:center}
+.stage{position:relative;width:1440px;height:900px;flex:none;transform-origin:50% 50%}
+
+.mono{font-family:"Overpass Mono",ui-monospace,monospace;font-weight:900}
+.inter{font-family:Inter,sans-serif}
+.text-label{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
+.textStroke{text-shadow:-2px -2px 0 #fff,0 -2px 0 #fff,2px -2px 0 #fff,2px 0 0 #fff,2px 2px 0 #fff,0 2px 0 #fff,-2px 2px 0 #fff,-2px 0 0 #fff}
+.glass{
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  border:1px solid #fff;box-shadow:var(--glass-shadow);
+}
+
+/* ---------- layer 1 : the dial panel ---------- */
+.dial-panel{position:absolute;left:390px;top:48px;width:320px;height:900px;background:#000;overflow:hidden}
+.dial-panel canvas{display:block;width:320px;height:900px}
+
+/* ---------- layer 2 : the mono outline ---------- */
+.sheet{
+  position:absolute;left:742px;top:48px;width:308px;height:836px;
+  background:#fff;border:2px solid #000;padding:8px 10px;overflow:hidden;
+  font-family:"Overpass Mono",ui-monospace,monospace;font-weight:900;font-size:16px;line-height:20px;
+}
+.sheet .head{margin-bottom:24px;white-space:nowrap}
+.sheet .env{white-space:nowrap}
+.sheet .env b{color:var(--key);font-weight:900}
+.sheet .rule{margin:8px 0 4px;letter-spacing:1px;opacity:.85}
+.sheet .row{white-space:nowrap;height:20px}
+.sheet .row.sec{margin-top:0}
+
+/* ---------- layer 3 : left column ---------- */
+.col{position:absolute;left:48px;top:48px;width:720px}
+.btn{
+  display:flex;align-items:center;width:266px;height:44px;padding:0 16px;
+  border-radius:8px;background:rgba(255,255,255,0);
+  opacity:.54;transition:opacity .3s,transform .3s;margin-bottom:12px;cursor:pointer;
+}
+.btn:hover{opacity:1;transform:translateX(2px)}
+.btn .k{margin-left:auto;font-size:10px;letter-spacing:1px;opacity:.55}
+
+.statement{position:absolute;left:48px;top:716px;width:720px}
+.statement .cap{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;line-height:32px}
+.statement .txt{font-size:28px;line-height:32px;font-weight:400;letter-spacing:-.01em}
+.statement .txt em{font-style:normal;color:var(--accent)}
+.statement a.lonkk{color:var(--accent);cursor:pointer}
+.statement a.lonkk:hover{text-decoration:underline}
+.statement .foot{margin-top:14px;font-family:"Overpass Mono",ui-monospace,monospace;font-weight:400;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6}
+.statement .foot a:hover{color:var(--accent)}
+
+/* ---------- layer 4 : the portal ---------- */
+.portalHolder{position:absolute;inset:0;font-family:"Overpass Mono",ui-monospace,monospace}
+.portal{position:absolute;left:560px;top:85px;width:320px;height:320px;border-radius:50%;cursor:crosshair;z-index:6}
+
+.halo{position:absolute;left:544px;top:69px;width:352px;height:352px;border-radius:50%;border:16px solid #fff;pointer-events:none;z-index:2}
+
+.spectrum{
+  background:
+    repeating-linear-gradient(190deg,rgba(255,0,0,.5) 40px,rgba(255,153,0,.5) 80px,rgba(255,255,0,.5) 120px,rgba(0,255,0,.5) 160px,rgba(0,0,255,.5) 200px,rgba(75,0,130,.5) 240px,rgba(238,130,238,.5) 280px,rgba(255,0,0,.5) 300px),
+    repeating-linear-gradient(-190deg,rgba(255,0,0,.5) 30px,rgba(255,153,0,.5) 60px,rgba(255,255,0,.5) 90px,rgba(0,255,0,.5) 120px,rgba(0,0,255,.5) 150px,rgba(75,0,130,.5) 180px,rgba(238,130,238,.5) 210px,rgba(255,0,0,.5) 230px),
+    repeating-linear-gradient(23deg,red 50px,orange 100px,#ff0 150px,green 200px,blue 250px,indigo 300px,violet 350px,red 370px);
+}
+.grad-core{
+  position:absolute;left:560px;top:85px;width:322px;height:322px;border-radius:50%;
+  filter:blur(16px) contrast(1.2) hue-rotate(280deg);mix-blend-mode:darken;pointer-events:none;z-index:2;
+}
+.grad-wide{
+  position:absolute;left:517px;top:42px;width:409px;height:409px;border-radius:50%;
+  filter:blur(16px) contrast(1.2) hue-rotate(200deg);mix-blend-mode:difference;opacity:.5;
+  animation:spin 60s ease-in-out infinite;pointer-events:none;z-index:3;
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(1turn)}}
+@keyframes spin-r{from{transform:rotate(1turn)}to{transform:rotate(0)}}
+
+/* organic metaball field inside the portal */
+.gnomon-field{
+  position:absolute;left:524px;top:190px;width:392px;height:146px;
+  filter:blur(21px) contrast(4.2);mix-blend-mode:exclusion;pointer-events:none;z-index:4;
+  background:#000;
+}
+.gnomon-field i{
+  position:absolute;border-radius:50%;background:radial-gradient(closest-side,#b9b9b9 58%,rgba(185,185,185,0) 100%);
+}
+.gnomon-field i:nth-child(1){left:10px;top:6px;width:150px;height:120px;animation:drift1 17s ease-in-out infinite alternate}
+.gnomon-field i:nth-child(2){left:190px;top:-4px;width:170px;height:140px;animation:drift2 23s ease-in-out infinite alternate}
+.gnomon-field i:nth-child(3){left:110px;top:22px;width:130px;height:96px;animation:drift3 13s ease-in-out infinite alternate}
+.gnomon-field i:nth-child(4){left:-20px;top:16px;width:110px;height:104px;animation:drift2 29s ease-in-out infinite alternate-reverse}
+@keyframes drift1{from{transform:translate(-24px,6px) scale(.85)}to{transform:translate(52px,-14px) scale(1.12)}}
+@keyframes drift2{from{transform:translate(34px,-12px) scale(1.08)}to{transform:translate(-40px,16px) scale(.8)}}
+@keyframes drift3{from{transform:translate(8px,18px) scale(1.18)}to{transform:translate(-20px,-18px) scale(.9)}}
+
+.ring{position:absolute;pointer-events:none}
+.ring svg{overflow:visible;display:block}
+.ring-a{left:444px;top:-31px;width:551px;height:551px;animation:spin 60s linear infinite;z-index:7}
+.ring-b{left:405px;top:-70px;width:630px;height:630px;animation:spin-r 90s linear infinite;mix-blend-mode:lighten;z-index:1}
+.ring-a text{font-size:24px;font-weight:900;fill:none;stroke:#fff;stroke-width:2.6px;paint-order:stroke;letter-spacing:1px}
+.ring-b text{font-size:24px;font-weight:900;fill:#fff;letter-spacing:1px}
+.ring-here{left:652px;top:462px;width:136px;height:136px;animation:spin-r 40s linear infinite;z-index:7}
+.ring-here text{font-size:10px;font-weight:900;fill:#000;letter-spacing:1.4px}
+
+/* cross-fading aphorisms above / below the portal */
+.aphorism{position:absolute;width:365px;left:538px;text-align:center;font-size:16px;font-weight:400;line-height:20px;z-index:8;pointer-events:none}
+.aphorism.top{top:18px}
+.aphorism.bot{top:418px}
+.aphorism span{position:absolute;left:0;right:0;opacity:0;transition:opacity 1.6s ease}
+.aphorism span.on{opacity:.5}
+
+/* ---------- trace chips ---------- */
+.chip{
+  position:absolute;height:29px;padding:0 10px;display:flex;align-items:center;
+  border-radius:4px;background:var(--glass);z-index:9;cursor:grab;user-select:none;
+  transition:box-shadow .2s;
+}
+.chip:active{cursor:grabbing}
+.chip:hover{box-shadow:0 4px 16px 0 rgba(232,39,165,.75)}
+
+/* ---------- hover-revealed net ---------- */
+.net{position:absolute;inset:0;opacity:0;transition:opacity .45s ease;z-index:8;pointer-events:none}
+.portalHolder.showNet .net{opacity:1}
+.node{
+  position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:var(--glass);font-size:10px;font-weight:800;letter-spacing:1px;line-height:11px;
+}
+.node.circ{width:58px;height:58px;border-radius:50%}
+.node.rect{width:58px;height:42px}
+.node.wide{width:130px;height:42px;font-size:9px}
+.net svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.net svg path{fill:none;stroke:var(--wire);stroke-width:3;mix-blend-mode:hard-light;
+  animation:wire 6s ease-in-out infinite alternate}
+.net svg path:nth-child(2n){animation-duration:5s;animation-delay:.4s}
+.net svg path:nth-child(3n){animation-duration:7.5s;animation-delay:.9s}
+@keyframes wire{
+  0%{stroke-width:3px;filter:blur(0);opacity:.95}
+  55%{stroke-width:7px;filter:blur(2px);opacity:.42}
+  100%{stroke-width:3px;filter:blur(0);opacity:.95}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .grad-wide,.ring-a,.ring-b,.ring-here,.gnomon-field i,.net svg path{animation:none!important}
+}
+</style>
+</head>
+<body>
+<div id="fit">
+<main class="stage" id="stage">
+
+  <!-- ============ the dial ============ -->
+  <div class="dial-panel"><canvas id="dial" width="640" height="1800" aria-label="A computed sundial for San Francisco, drawing itself"></canvas></div>
+
+  <!-- ============ the sheet ============ -->
+  <section class="sheet" id="sheet">
+    <div class="head">[LONG HORIZON &#8734; RESEARCH]</div>
+    <div class="env"><b>DRAFT/</b> the machine fills the page in seconds</div>
+    <div class="env"><b>REVIEW/</b> a person decides what survives the page</div>
+    <div class="env"><b>ACCEPT/</b> a small act of taste, recorded as it happens</div>
+    <div class="env"><b>REVERT/</b> also taste, and often the louder signal</div>
+    <div class="rule">&#729;&#183;.&#184;&#184;.&#183;&#729; &#184;.&#183;&#729;&#729;&#183;.&#184; &#729;&#183;.&#184;&#184;.&#183;&#729;</div>
+    <div id="outline"></div>
+  </section>
+
+  <!-- ============ left column ============ -->
+  <nav class="col">
+    <a class="btn glass textStroke" href="https://sundialhub.com" target="_blank" rel="noopener">
+      <span class="text-label">Sundial [instrument 01]</span>
+    </a>
+    <a class="btn glass textStroke" href="mailto:team@longhorizonresearch.com">
+      <span class="text-label">Open roles</span>
+    </a>
+  </nav>
+
+  <div class="statement">
+    <div class="cap textStroke">Hiring researchers and engineers</div>
+    <div class="txt inter textStroke">Long Horizon Research is a small lab in San Francisco.
+      The agents are here; the <a class="lonkk" href="https://sundialhub.com" target="_blank" rel="noopener">instruments</a> are not,
+      so we are building them, starting with the surface a person thinks on.</div>
+    <div class="foot textStroke"><a href="mailto:team@longhorizonresearch.com">team@longhorizonresearch.com</a> &nbsp;&#183;&nbsp; San Francisco</div>
+  </div>
+
+  <!-- ============ portal overlay ============ -->
+  <div class="portalHolder" id="holder">
+
+    <div class="aphorism mono top" id="aph-top"></div>
+
+    <div class="ring ring-b">
+      <svg viewBox="0 0 630 630"><defs><path id="rb" d="M 315,315 m -287,0 a 287,287 0 1,1 574,0 a 287,287 0 1,1 -574,0"/></defs>
+        <text><textPath href="#rb" startOffset="0">THE AGENTS ARE HERE &#183; THE INSTRUMENTS ARE NOT &#183; THE AGENTS ARE HERE &#183; THE INSTRUMENTS ARE NOT &#183; </textPath></text>
+      </svg>
+    </div>
+
+    <div class="grad-core spectrum"></div>
+    <div class="grad-wide spectrum"></div>
+    <div class="gnomon-field"><i></i><i></i><i></i><i></i></div>
+    <div class="halo"></div>
+
+    <div class="ring ring-a">
+      <svg viewBox="0 0 551 551"><defs><path id="ra" d="M 275.5,275.5 m -248,0 a 248,248 0 1,1 496,0 a 248,248 0 1,1 -496,0"/></defs>
+        <text><textPath href="#ra" startOffset="0">MOST OF THE DRAFTING IS DONE BY MACHINES NOW &#183; ALL OF THE JUDGMENT IS STILL YOURS &#183; </textPath></text>
+      </svg>
+    </div>
+
+    <div class="portal" id="portal"></div>
+
+    <div class="aphorism mono bot" id="aph-bot"></div>
+
+    <!-- hover-revealed: many people, many agents, one document -->
+    <div class="net" id="net">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+        <path d="M590,559 C590,600 620,610 620,655"/>
+        <path d="M720,559 C720,600 690,612 690,655"/>
+        <path d="M720,559 C720,600 750,612 750,655"/>
+        <path d="M850,559 C850,600 820,610 820,655"/>
+        <path d="M590,697 C590,750 700,745 715,793"/>
+        <path d="M720,697 C720,745 720,750 720,793"/>
+        <path d="M850,697 C850,750 740,745 725,793"/>
+      </svg>
+      <div class="node circ glass mono" style="left:561px;top:501px">YOU</div>
+      <div class="node circ glass mono" style="left:691px;top:501px">AGENT</div>
+      <div class="node circ glass mono" style="left:821px;top:501px">PEER</div>
+      <div class="node rect glass mono" style="left:561px;top:655px">EDIT</div>
+      <div class="node rect glass mono" style="left:691px;top:655px">NOTE</div>
+      <div class="node rect glass mono" style="left:821px;top:655px">UNDO</div>
+      <div class="node wide rect glass mono textStroke" style="left:655px;top:793px">ONE DOCUMENT</div>
+      <div class="ring ring-here">
+        <svg viewBox="0 0 136 136"><defs><path id="rh" d="M 68,68 m -50,0 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0"/></defs>
+          <text><textPath href="#rh" startOffset="0">LONG HORIZON &#183; SAN FRANCISCO &#183; </textPath></text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- traces of judgment, draggable -->
+    <div class="chip glass textStroke text-label" style="left:531px;top:321px">Edit</div>
+    <div class="chip glass textStroke text-label" style="left:637px;top:354px">Revert</div>
+    <div class="chip glass textStroke text-label" style="left:455px;top:409px">Comment</div>
+    <div class="chip glass textStroke text-label" style="left:566px;top:409px">Accept</div>
+    <div class="chip glass textStroke text-label" style="left:633px;top:463px">Review</div>
+    <div class="chip glass textStroke text-label" style="left:527px;top:497px">Prompt</div>
+  </div>
+
+</main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------- fit the 1440x900 composition to the window ---------------- */
+  var stage = document.getElementById('stage');
+  function fit() {
+    var s = Math.min(window.innerWidth / 1470, window.innerHeight / 930);
+    stage.style.transform = 'scale(' + Math.max(0.28, s) + ')';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+
+  /* ---------------- the outline, with progressive depth-of-field blur -------- */
+  var OUTLINE = [
+    'SURFACE',
+    '- THE PLACE A PERSON READS',
+    '- DECIDING FASTER THAN DRAFTING',
+    '- REVIEW AS THE FIRST MOVE',
+    '-- ATTRIBUTION',
+    '-- REVERSAL',
+    '-- PACE',
+    'JUDGMENT',
+    '- EVERY EDIT IS A TRACE',
+    '- EVERY COMMENT IS A TRACE',
+    '- ACCEPTANCE AND REVERSAL',
+    '-- PERSONALIZATION',
+    '-- LEARNING FROM REAL WORK',
+    '-- TASTE, HELD OVER TIME',
+    'SHARED GROUND',
+    '- MANY PEOPLE',
+    '- MANY AGENTS',
+    '- ONE DOCUMENT',
+    '-- WHO CHANGED IT',
+    '-- WHEN, AND AGAINST WHAT',
+    '-- NOTHING LOST IN THE MERGE',
+    'INSTRUMENTS',
+    '- SUNDIAL',
+    '- THE ONE AFTER SUNDIAL',
+    '- A SERIES, NOT A PRODUCT',
+    'OPEN',
+    '- RESEARCHERS',
+    '- ENGINEERS',
+    '- INTERFACES, RL, PERSONALIZATION',
+    '- SAN FRANCISCO',
+    'LONG HORIZON',
+    '- THE WORK OUTLIVES THE SESSION',
+    '- THE RECORD OUTLIVES THE WORK',
+    '- BUILD FOR THE LONG READ',
+    'NOTES',
+    '- ON DRAFTING',
+    '- ON DECIDING',
+    '- ON KEEPING THE THREAD',
+    '- ON INSTRUMENTS',
+    '- ON HORIZONS'
+  ];
+  var host = document.getElementById('outline');
+  OUTLINE.forEach(function (line, i) {
+    var d = document.createElement('div');
+    d.className = 'row' + (line.charAt(0) === '-' ? '' : ' sec');
+    d.textContent = line;
+    d.style.filter = 'blur(' + (i * 0.1).toFixed(1) + 'px)';
+    host.appendChild(d);
+  });
+
+  /* ---------------- cross-fading aphorisms ---------------- */
+  var TOP = [
+    'the draft is cheap now',
+    'the page fills itself in seconds',
+    'someone still has to mean it'
+  ];
+  var BOT = [
+    'a reversal says what you meant',
+    'every edit is a trace of judgment',
+    'the instrument is the argument'
+  ];
+  function cycler(el, lines, offset) {
+    var spans = lines.map(function (t) {
+      var s = document.createElement('span');
+      s.textContent = t;
+      el.appendChild(s);
+      return s;
+    });
+    var i = offset % lines.length;
+    spans[i].classList.add('on');
+    setInterval(function () {
+      spans[i].classList.remove('on');
+      i = (i + 1) % lines.length;
+      spans[i].classList.add('on');
+    }, 7000);
+  }
+  cycler(document.getElementById('aph-top'), TOP, 0);
+  cycler(document.getElementById('aph-bot'), BOT, 1);
+
+  /* ---------------- portal reveals the shared-document graph --------------- */
+  var holder = document.getElementById('holder');
+  var portal = document.getElementById('portal');
+  portal.addEventListener('mouseenter', function () { holder.classList.add('showNet'); });
+  portal.addEventListener('mouseleave', function () { holder.classList.remove('showNet'); });
+
+  /* ---------------- draggable trace chips ---------------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (chip) {
+    var dragging = false, ox = 0, oy = 0, scale = 1;
+    chip.addEventListener('pointerdown', function (e) {
+      dragging = true;
+      scale = stage.getBoundingClientRect().width / 1440;
+      ox = e.clientX - parseFloat(chip.style.left) * scale;
+      oy = e.clientY - parseFloat(chip.style.top) * scale;
+      chip.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    chip.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      chip.style.left = Math.max(-40, Math.min(1400, (e.clientX - ox) / scale)) + 'px';
+      chip.style.top = Math.max(-20, Math.min(880, (e.clientY - oy) / scale)) + 'px';
+    });
+    chip.addEventListener('pointerup', function () { dragging = false; });
+    chip.addEventListener('pointercancel', function () { dragging = false; });
+  });
+
+  /* ================================================================
+     THE DIAL
+     A horizontal sundial computed for San Francisco (37.7749 N).
+     Hour lines radiate from the foot of the style at
+        theta = atan( sin(lat) * tan(hourAngle) ).
+     The whole plate precesses very slowly, so the fan sweeps and the
+     lines accumulate into a field. One bright line is the shadow.
+     ================================================================ */
+  var cv = document.getElementById('dial');
+  var g = cv.getContext('2d');
+  var W = 320, H = 900, DPR = 2;
+  cv.width = W * DPR; cv.height = H * DPR;
+  g.scale(DPR, DPR);
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, W, H);
+
+  var LAT = 37.7749 * Math.PI / 180;   // San Francisco
+  var SINLAT = Math.sin(LAT);
+  var OX = 160, OY = 700;              // foot of the style
+  var R = 1400;                        // ray length, well past the plate
+  var INNER = 46;                      // rays start off the foot, so it never blows out
+
+  function hourTheta(h) {              // h = hours from noon
+    var Ha = h * 15 * Math.PI / 180;
+    var th = Math.atan(SINLAT * Math.tan(Ha));
+    if (Ha > Math.PI / 2) th += Math.PI;
+    if (Ha < -Math.PI / 2) th -= Math.PI;
+    return th;
+  }
+
+  // the chips sit on the plate; give each a soft node behind it
+  var NODES = [[141,273],[247,306],[65,361],[176,361],[243,415],[137,449]];
+
+  var t0 = performance.now();
+  var raf = 0;
+
+  function ray(theta, alpha, width) {
+    var a = -Math.PI / 2 + theta;      // noon points up the plate
+    var c = Math.cos(a), s = Math.sin(a);
+    g.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+    g.lineWidth = width;
+    g.beginPath();
+    g.moveTo(OX + c * INNER, OY + s * INNER);
+    g.lineTo(OX + c * R, OY + s * R);
+    g.stroke();
+  }
+
+  function draw(now) {
+    var t = (now - t0) / 1000;
+    var i, k;
+
+    g.fillStyle = '#000';
+    g.fillRect(0, 0, W, H);
+    g.lineWidth = 1;
+
+    /* --- the orbit field ------------------------------------------------
+       Circles whose centres ride a slowly turning ring: the envelope is a
+       spirograph, and the plate reads as one long exposure of the sky. */
+    g.strokeStyle = 'rgba(255,255,255,0.20)';
+    g.beginPath();
+    for (i = 0; i < 58; i++) {
+      var a1 = i * (6.2831853 / 58) + t * 0.028;
+      var cx = 160 + Math.cos(a1) * 172;
+      var cy = 452 + Math.sin(a1) * 214;
+      var rr = 268 + Math.sin(a1 * 3 + t * 0.05) * 54;
+      g.moveTo(cx + rr, cy);
+      g.arc(cx, cy, rr, 0, 6.2831853);
+    }
+    g.stroke();
+
+    // a second, tighter family low on the plate
+    g.strokeStyle = 'rgba(255,255,255,0.155)';
+    g.beginPath();
+    for (i = 0; i < 34; i++) {
+      var a2 = i * (6.2831853 / 34) - t * 0.041;
+      var dx = 156 + Math.cos(a2) * 104;
+      var dy = 716 + Math.sin(a2) * 92;
+      var dr = 142 + Math.cos(a2 * 2 - t * 0.06) * 46;
+      g.moveTo(dx + dr, dy);
+      g.arc(dx, dy, dr, 0, 6.2831853);
+    }
+    g.stroke();
+
+    /* --- the hour fan, computed for San Francisco ---------------------- */
+    var prec = Math.sin(t * 0.047) * 0.16 + Math.sin(t * 0.013) * 0.05;
+    g.strokeStyle = 'rgba(255,255,255,0.30)';
+    for (var h = -8; h <= 8; h++) ray(hourTheta(h) + prec, 0.30, 1);
+    g.strokeStyle = 'rgba(255,255,255,0.085)';
+    for (var q = -32; q <= 32; q++) {
+      if (q % 4 === 0) continue;
+      ray(hourTheta(q / 4) + prec, 0.115, 1);
+    }
+
+    /* --- declination arcs about the foot of the style ------------------ */
+    g.save();
+    g.translate(OX, OY);
+    g.rotate(prec * 0.5);
+    g.strokeStyle = 'rgba(255,255,255,0.19)';
+    g.beginPath();
+    for (k = 1; k <= 15; k++) {
+      var dd = 54 * k + Math.sin(t * 0.077 + k * 0.7) * 20;
+      g.ellipse(0, 0, dd, dd * (0.58 + 0.12 * Math.sin(t * 0.043 + k)), 0, Math.PI * 1.03, Math.PI * 1.97);
+    }
+    g.stroke();
+    g.restore();
+
+    /* --- the shadow of the style --------------------------------------- */
+    var sh = hourTheta(((t * 0.085) % 16) - 8) + prec;
+    ray(sh, 0.95, 1.3);
+
+    var beadA = -Math.PI / 2 + sh;
+    var bd = 70 + ((t * 46) % 520);
+    g.fillStyle = 'rgba(255,255,255,0.95)';
+    g.beginPath();
+    g.arc(OX + Math.cos(beadA) * bd, OY + Math.sin(beadA) * bd, 1.8, 0, 6.2832);
+    g.fill();
+
+    g.fillStyle = 'rgba(255,255,255,0.9)';
+    g.beginPath(); g.arc(OX, OY, 2.2, 0, 6.2832); g.fill();
+
+    /* --- soft nodes under the trace chips ------------------------------ */
+    for (var n = 0; n < NODES.length; n++) {
+      var p = NODES[n];
+      var puls = 0.16 + 0.07 * Math.sin(t * 0.8 + n * 1.7);
+      var grd = g.createRadialGradient(p[0], p[1], 0, p[0], p[1], 30);
+      grd.addColorStop(0, 'rgba(255,255,255,' + puls.toFixed(3) + ')');
+      grd.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = grd;
+      g.beginPath(); g.arc(p[0], p[1], 30, 0, 6.2832); g.fill();
+    }
+
+    /* --- traces creeping outward along the hour lines ------------------ */
+    g.fillStyle = 'rgba(255,255,255,0.8)';
+    for (i = 0; i < 54; i++) {
+      var seed = i * 2.399963;
+      var ang = -Math.PI / 2 + hourTheta(((i % 17) - 8) * 0.94) + prec + Math.sin(t * 0.13 + seed) * 0.06;
+      var d = 60 + (t * (11 + (i % 7) * 4) + i * 71) % 700;
+      var x = OX + Math.cos(ang) * d;
+      var y = OY + Math.sin(ang) * d * 0.98;
+      if (x > -4 && x < W + 4 && y > -4 && y < H + 4) g.fillRect(x, y, 1.2, 1.2);
+    }
+
+    raf = requestAnimationFrame(draw);
+  }
+  raf = requestAnimationFrame(draw);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { cancelAnimationFrame(raf); }
+    else { t0 = performance.now() - 1000; raf = requestAnimationFrame(draw); }
+  });
+})();
+</script>
+</body>
+</html>

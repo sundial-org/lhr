@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" width="520" height="400">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="beamG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.4" cy="1.4" r="1.05" fill="#FFFFFF" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <g transform="translate(214 206)">
+    <!-- cast shadow of the gnomon, as a wedge of light -->
+    <path d="M0 0 L-172 -96 L-186 -34 Z" fill="url(#beamG)" opacity="0.7"/>
+
+    <circle r="168" fill="url(#face)" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2"/>
+    <circle r="139" fill="none" stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="1"/>
+    <circle r="58" fill="none" stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="1"/>
+
+    <g stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.85">
+      <line x1="0" y1="-168" x2="0" y2="-140"/>
+      <line x1="84" y1="-145.5" x2="70" y2="-121.2"/>
+      <line x1="145.5" y1="-84" x2="121.2" y2="-70"/>
+      <line x1="168" y1="0" x2="140" y2="0"/>
+      <line x1="145.5" y1="84" x2="121.2" y2="70"/>
+      <line x1="84" y1="145.5" x2="70" y2="121.2"/>
+      <line x1="0" y1="168" x2="0" y2="140"/>
+      <line x1="-84" y1="145.5" x2="-70" y2="121.2"/>
+      <line x1="-145.5" y1="84" x2="-121.2" y2="70"/>
+      <line x1="-168" y1="0" x2="-140" y2="0"/>
+      <line x1="-145.5" y1="-84" x2="-121.2" y2="-70"/>
+      <line x1="-84" y1="-145.5" x2="-70" y2="-121.2"/>
+    </g>
+    <g stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.35">
+      <line x1="43.5" y1="-162.3" x2="36.2" y2="-135.2"/>
+      <line x1="118.8" y1="-118.8" x2="99" y2="-99"/>
+      <line x1="162.3" y1="-43.5" x2="135.2" y2="-36.2"/>
+      <line x1="162.3" y1="43.5" x2="135.2" y2="36.2"/>
+      <line x1="118.8" y1="118.8" x2="99" y2="99"/>
+      <line x1="43.5" y1="162.3" x2="36.2" y2="135.2"/>
+      <line x1="-43.5" y1="162.3" x2="-36.2" y2="135.2"/>
+      <line x1="-118.8" y1="118.8" x2="-99" y2="99"/>
+      <line x1="-162.3" y1="43.5" x2="-135.2" y2="36.2"/>
+      <line x1="-162.3" y1="-43.5" x2="-135.2" y2="-36.2"/>
+      <line x1="-118.8" y1="-118.8" x2="-99" y2="-99"/>
+      <line x1="-43.5" y1="-162.3" x2="-36.2" y2="-135.2"/>
+    </g>
+
+    <!-- gnomon -->
+    <path d="M0 0 L0 -128 L96 0 Z" fill="url(#dots)"/>
+    <path d="M0 0 L0 -128 L96 0 Z" fill="none" stroke="#FFFFFF" stroke-width="2.4"/>
+    <circle r="6" fill="#FFFFFF"/>
+  </g>
+</svg>
